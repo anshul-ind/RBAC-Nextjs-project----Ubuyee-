@@ -1,15 +1,16 @@
-import jwt from "jsonwebtoken";
+/**
+ * Backwards-compatible JWT helpers.
+ *
+ * Existing code imports from `@/lib/jwt`. Internally, we delegate to the
+ * canonical implementation in `@/lib/auth/jwt` to keep logic centralized.
+ */
+import { signJwt, verifyJwt, type JwtRole, type JwtPayload } from "./auth/jwt";
 
-const JWT_SECRET = process.env.JWT_SECRET as string;
-
-export function generateToken(userId: string, role: string) {
-  return jwt.sign(
-    { userId, role },
-    JWT_SECRET,
-    { expiresIn: "7d" }
-  );
+export function generateToken(userId: string, role: JwtRole) {
+  const payload: JwtPayload = { sub: userId, role };
+  return signJwt(payload);
 }
 
 export function verifyToken(token: string) {
-  return jwt.verify(token, JWT_SECRET);
+  return verifyJwt(token);
 }
