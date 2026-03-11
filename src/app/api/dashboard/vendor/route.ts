@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     let payload;
     try {
-      payload = verifyToken(token);
+      payload = await verifyToken(token);
     } catch {
       return NextResponse.json(
         { ok: false, error: "Invalid token" },

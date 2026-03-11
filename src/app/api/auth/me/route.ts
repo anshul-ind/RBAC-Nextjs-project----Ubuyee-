@@ -1,7 +1,7 @@
 import connectToDatabase from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
-import User from "@/models/user.model";
+import { UserModel as User } from "@/lib/db/models/User";
 
 /**
  * Returns the currently authenticated user based on the `token` cookie.
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
 
     let payload;
     try {
-      payload = verifyToken(token);
+     payload = await verifyToken(token);
     } catch {
       return NextResponse.json({ ok: false, user: null }, { status: 401 });
     }

@@ -1,6 +1,6 @@
 import connectToDatabase from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/user.model";
+import { UserModel as User } from "@/lib/db/models/User";
 import { hashPassword } from "@/lib/auth/password";
 import { generateToken } from "@/lib/jwt";
 
@@ -64,16 +64,9 @@ export async function POST(request: NextRequest) {
       role: requestedRole,
     });
 
-    const token = generateToken(newUser._id.toString(), newUser.role);
-
-    const response = NextResponse.json(
-      {
-        message: "User signed up",
-        user: { id: newUser._id, email: newUser.email, role: newUser.role },
-      },
-      { status: 201 },
-    );
-
+    /* 
+    // We no longer auto-login after signup per user request 
+    const token = await generateToken(newUser._id.toString(), newUser.role);
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -81,13 +74,20 @@ export async function POST(request: NextRequest) {
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
+    */
 
-    return response;
+    return NextResponse.json(
+      {
+        message: "User signed up successfully. Please log in.",
+        user: { id: newUser._id, email: newUser.email, role: newUser.role },
+      },
+      { status: 201 },
+    );
   } catch (error) {
-    console.error("signup error:", error);
+    console.error("DEBUG SIGNUP ERROR:", error);
     return NextResponse.json(
       { error: "Internal server error during signup." },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

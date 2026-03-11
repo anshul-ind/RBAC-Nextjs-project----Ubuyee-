@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { FiArrowRight } from "react-icons/fi";
+import UbuyeeLogo from "./shared/UbuyeeLogo";
 
 // ─── Ubuyee brand colors ───────────────────────────────────────────────────
 // Orange: #f97316   Navy: #1e3a5f
@@ -21,7 +22,7 @@ import { FiArrowRight } from "react-icons/fi";
         justifyContent: "center",
         overflow: "hidden",
         fontFamily: "'DM Sans', 'Helvetica Neue', sans-serif",
-        background: "#f8f4ef",
+        background: "#ffffff",
       }}
     >
       {/* ── Hazy / blurry background layers ────────────────────────────── */}
@@ -44,9 +45,9 @@ import { FiArrowRight } from "react-icons/fi";
         }}
       />
 
-      {/* Large soft navy blob — bottom-right */}
+      {/* Large soft secondary orange blob — bottom-right */}
       <motion.div
-        animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.65, 0.4] }}
+        animate={{ scale: [1, 1.1, 1], opacity: [0.3, 0.5, 0.3] }}
         transition={{
           duration: 8,
           repeat: Infinity,
@@ -61,7 +62,7 @@ import { FiArrowRight } from "react-icons/fi";
           height: "40rem",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle, rgba(30,58,95,0.28) 0%, rgba(30,58,95,0.06) 55%, transparent 75%)",
+            "radial-gradient(circle, rgba(251,146,60,0.2) 0%, rgba(251,146,60,0.05) 55%, transparent 75%)",
           filter: "blur(56px)",
           pointerEvents: "none",
         }}
@@ -123,27 +124,19 @@ import { FiArrowRight } from "react-icons/fi";
               transition: { type: "spring", stiffness: 350, damping: 14 },
             }}
             style={{
-              padding: "1.2rem 2.4rem",
-              background: "rgba(255,255,255,0.82)",
+              background: "rgba(255,255,255,0.9)",
               backdropFilter: "blur(20px)",
               WebkitBackdropFilter: "blur(20px)",
               borderRadius: "29rem",
               boxShadow:
-                "0 8px 48px rgba(249,115,22,0.18), 0 2px 12px rgba(30,58,95,0.12), 0 0 0 1px rgba(249,115,22,0.12)",
+                "0 8px 48px rgba(249,115,22,0.12), 0 2px 12px rgba(0,0,0,0.05), 0 0 0 1px #f3f4f6",
               cursor: "default",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
-            {/* Logo — inline base64 so no /public setup needed */}
-            <img
-              src="/assets/harbour.png"
-              alt="Ubuyee"
-              width={160}
-              height={56}
-              style={{ objectFit: "contain", display: "block" }}
-            />
+            <UbuyeeLogo size="lg" />
           </motion.div>
         </motion.div>
 
@@ -154,10 +147,10 @@ import { FiArrowRight } from "react-icons/fi";
           transition={{ delay: 0.75, duration: 0.6, ease: "easeOut" }}
           style={{
             margin: 0,
-            fontSize: "1.05rem",
-            fontWeight: 400,
-            color: "rgba(30,58,95,0.65)",
-            letterSpacing: "0.04em",
+            fontSize: "1.1rem",
+            fontWeight: 500,
+            color: "#6b7280",
+            letterSpacing: "0.02em",
             textAlign: "center",
             fontFamily: "'DM Sans', sans-serif",
           }}
@@ -177,7 +170,7 @@ import { FiArrowRight } from "react-icons/fi";
           }}
         >
           <motion.button
-            onClick={() => router.push("/register")}
+            onClick={() => router.push("/login")}
             whileHover={{
               scale: 1.06,
               boxShadow: "0 16px 40px rgba(249,115,22,0.45)",
@@ -227,8 +220,8 @@ import { FiArrowRight } from "react-icons/fi";
           transition={{ delay: 1.2, duration: 0.5 }}
           style={{
             margin: 0,
-            fontSize: "0.82rem",
-            color: "rgba(30,58,95,0.5)",
+            fontSize: "0.9rem",
+            color: "#6b7280",
             fontFamily: "'DM Sans', sans-serif",
           }}
         >

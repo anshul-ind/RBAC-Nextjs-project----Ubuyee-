@@ -6,11 +6,11 @@
  */
 import { signJwt, verifyJwt, type JwtRole, type JwtPayload } from "./auth/jwt";
 
-export function generateToken(userId: string, role: JwtRole) {
+export async function generateToken(userId: string, role: JwtRole) {
   const payload: JwtPayload = { sub: userId, role };
-  return signJwt(payload);
+  return await signJwt(payload);
 }
 
-export function verifyToken(token: string) {
-  return verifyJwt(token);
+export async function verifyToken(token: string) {
+  return await verifyJwt(token);
 }

@@ -1,6 +1,6 @@
 import connectToDatabase from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
-import User from "@/models/user.model";
+import { UserModel as User } from "@/lib/db/models/User";
 import { comparePassword } from "@/lib/auth/password";
 import { generateToken } from "@/lib/jwt";
 
@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    const { email, password } = await request.json();
+    const { email, password, role: requestedRole } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -33,6 +33,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!existingUser.passwordHash) {
+      return NextResponse.json(
+        { error: "This account has no password set (old schema). Please register again." },
+        { status: 400 }
+      );
+    }
+
     const isMatch = await comparePassword(password, existingUser.passwordHash);
 
     if (!isMatch) {
@@ -42,7 +49,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = generateToken(existingUser._id.toString(), existingUser.role);
+    // Role-Strict Enforcement: Check if the user is logging into the correct portal
+    // EXCEPTION: Admins are allowed to log in via any portal
+    if (requestedRole && existingUser.role !== requestedRole && existingUser.role !== "admin") {
+      return NextResponse.json(
+        { 
+          error: `Access Denied: Your account is registered as a ${existingUser.role}. Please use the ${existingUser.role} login portal.` 
+        },
+        { status: 403 }
+      );
+    }
+
+    const token = await generateToken(existingUser._id.toString(), existingUser.role);
 
     const response = NextResponse.json(
       {
@@ -63,7 +81,7 @@ export async function POST(request: NextRequest) {
     return response;
 
   } catch (error) {
-    console.error("login error:", error);
+    console.error("DEBUG LOGIN ERROR:", error);
     return NextResponse.json(
       { error: "Internal server error during login." },
       { status: 500 }

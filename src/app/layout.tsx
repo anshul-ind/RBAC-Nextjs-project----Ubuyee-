@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { Provider } from "react-redux";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { store } from "@/store";
+import { ReduxProvider } from "@/components/providers/ReduxProvider";
+import ToasterProvider from "@/components/providers/ToasterProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +30,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* Redux provider for role-based auth and dashboards */}
-        <Provider store={store}>{children}</Provider>
+        <ReduxProvider>
+          <ToasterProvider />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

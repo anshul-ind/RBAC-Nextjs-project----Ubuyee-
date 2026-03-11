@@ -1,6 +1,38 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-export type DashboardData = unknown;
+// ── Per-role dashboard stat shapes ────────────────────────────────────────────
+// These types mirror the `data` field returned by each /api/dashboard/* route.
+
+/** Stats returned by GET /api/dashboard/user */
+export type UserDashboardData = {
+  stats: {
+    totalOrders: number;
+    activeSubscriptions: number;
+  };
+};
+
+/** Stats returned by GET /api/dashboard/vendor */
+export type VendorDashboardData = {
+  stats: {
+    totalSales: number;
+    activeProducts: number;
+  };
+};
+
+/** Stats returned by GET /api/dashboard/admin */
+export type AdminDashboardData = {
+  stats: {
+    totalUsers: number;
+    totalVendors: number;
+  };
+};
+
+/** Union of all possible dashboard payloads (null = not yet loaded) */
+export type DashboardData =
+  | UserDashboardData
+  | VendorDashboardData
+  | AdminDashboardData
+  | null;
 
 export type DashboardState = {
   data: DashboardData;

@@ -2,10 +2,11 @@
  * Canonical JWT utilities for the application.
  *
  * NOTE:
- * - New code should import from `@/lib/auth/jwt`.
- * - `@/lib/jwt` remains as a thin wrapper for backwards compatibility.
+ * - We use 'jose' instead of 'jsonwebtoken' because middleware runs in 
+ *   the Edge Runtime, which does not support Node.js 'crypto' or 'stream'.
+ * - Verification is now asynchronous.
  */
-import jwt from "jsonwebtoken";
+import * as jose from "jose";
 
 export type JwtRole = "user" | "vendor" | "admin";
 
@@ -14,23 +15,25 @@ export type JwtPayload = {
   role: JwtRole;
 };
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-  throw new Error("Missing JWT_SECRET environment variable.");
-}
+const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_keep_it_safe";
+const secretKey = new TextEncoder().encode(JWT_SECRET);
 
 /**
  * Sign a JWT with the given payload.
  */
-export function signJwt(payload: JwtPayload, expiresIn: string = "7d") {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn });
+export async function signJwt(payload: JwtPayload, expiresIn: string = "7d") {
+  return await new jose.SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(expiresIn)
+    .sign(secretKey);
 }
 
 /**
  * Verify a JWT and return the strongly typed payload.
- * Throws `JsonWebTokenError` / `TokenExpiredError` on failure.
+ * Throws on failure.
  */
-export function verifyJwt(token: string) {
-  return jwt.verify(token, JWT_SECRET) as JwtPayload;
+export async function verifyJwt(token: string): Promise<JwtPayload> {
+  const { payload } = await jose.jwtVerify(token, secretKey);
+  return payload as unknown as JwtPayload;
 }

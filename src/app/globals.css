@@ -1,2 +1,69 @@
 @import "tailwindcss";
 
+:root {
+  --primary-text:     #f97316;
+  --primary-bg:       #fff7ed;
+  --primary-border:   #fed7aa;
+  --primary-hover:    #ea6c0a;
+
+  --secondary-text:   #1e3a5f;
+  --secondary-bg:     #eff6ff;
+  --secondary-border: #bfdbfe;
+
+  --accent-text:      #111827;
+  --accent-bg:        #f9fafb;
+  --accent-border:    #e5e7eb;
+
+  --neutral-text:     #374151;
+  --neutral-bg:       #ffffff;
+  --neutral-border:   #f3f4f6;
+  --neutral-muted:    #6b7280;
+
+  --info-text:        #0ea5e9;
+  --info-bg:          #f0f9ff;
+  --info-border:      #bae6fd;
+
+  --warning-text:     #f59e0b;
+  --warning-bg:       #fffbeb;
+  --warning-border:   #fde68a;
+
+  --error-text:       #ef4444;
+  --error-bg:         #fef2f2;
+  --error-border:     #fecaca;
+
+  --success-text:     #22c55e;
+  --success-bg:       #f0fdf4;
+  --success-border:   #bbf7d0;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-1620px); }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.marquee-track {
+  animation: marquee 24s linear infinite;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  width: max-content;
+  will-change: transform;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
