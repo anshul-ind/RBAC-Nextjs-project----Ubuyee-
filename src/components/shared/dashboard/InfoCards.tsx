@@ -35,13 +35,13 @@ const Card = ({
   hasBadge,
 }: CardProps) => {
   const cardStyle: React.CSSProperties = {
-    width: "300px",
-    minWidth: "300px",
-    height: "360px",
+    width: "clamp(220px, 60vw, 300px)",
+    minWidth: "clamp(220px, 60vw, 300px)",
+    height: "clamp(280px, 70vw, 360px)",
     backgroundColor: "var(--color-0)",
     border: "1px solid var(--color-100)",
-    borderRadius: "var(--radius-md)",
-    padding: "36px 28px 24px 28px",
+    borderRadius: "var(--radius-2xl)",
+    padding: "clamp(1rem, 4vw, 2rem) clamp(1rem, 3vw, 1.5rem)",
     display: "flex",
     flexDirection: "column",
     position: "relative",
@@ -52,63 +52,67 @@ const Card = ({
   };
 
   const categoryStyle: React.CSSProperties = {
-    fontSize: "10px",
-    fontWeight: 700,
+    fontSize: "clamp(0.6rem, 2vw, 0.65rem)",
+    fontWeight: 600,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
     color: "var(--color-400)",
-    marginBottom: "20px",
+    marginBottom: "clamp(0.5rem, 2vw, 1rem)",
     flexShrink: 0,
   };
 
   const headlineStyle: React.CSSProperties = {
-    fontSize: "24px",
-    fontWeight: 800,
+    fontSize: "clamp(1.1rem, 4vw, 1.5rem)",
+    fontWeight: 700,
     color: "var(--color-900)",
     lineHeight: 1.15,
-    fontFamily: 'Georgia, "Times New Roman", serif',
+    fontFamily: 'Inter, system-ui, sans-serif',
     margin: 0,
     whiteSpace: "pre-line",
     flexShrink: 0,
   };
 
   const accentLineStyle: React.CSSProperties = {
-    width: "60px",
-    height: "4px",
+    width: "40px",
+    height: "3px",
     backgroundColor: "var(--color-primary)",
     borderRadius: "2px",
-    marginTop: "10px",
-    marginBottom: "12px",
+    marginTop: "8px",
+    marginBottom: "8px",
     flexShrink: 0,
   };
 
   const bodyStyle: React.CSSProperties = {
-    fontSize: "13px",
+    fontSize: "clamp(0.75rem, 2vw, 0.825rem)",
     color: "var(--color-600)",
-    lineHeight: "1.7",
-    marginTop: "16px",
+    lineHeight: "1.6",
+    marginTop: "clamp(0.5rem, 2vw, 1rem)",
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
   };
 
   const bottomLabelAreaStyle: React.CSSProperties = {
     flexShrink: 0,
-    paddingTop: "12px",
-    borderTop: "1px solid var(--color-200)",
+    paddingTop: "clamp(0.5rem, 2vw, 0.75rem)",
+    borderTop: "1px solid var(--color-100)",
     marginTop: "auto",
   };
 
   const bottomLabelStyle: React.CSSProperties = {
-    fontSize: "0.75rem",
+    fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)",
     fontWeight: 600,
     color: bottomLabelColor || "var(--color-700)",
   };
 
   const badgeStyle: React.CSSProperties = {
     position: "absolute",
-    bottom: "28px",
+    bottom: "clamp(1rem, 3vw, 1.5rem)",
     left: "50%",
     transform: "translateX(-50%)",
-    width: "32px",
-    height: "6px",
+    width: "30px",
+    height: "4px",
     backgroundColor: "var(--color-primary)",
     borderRadius: "var(--radius-full)",
   };
@@ -236,28 +240,30 @@ export default function InfoCards() {
   const slides = [...cardsData, ...cardsData];
 
   return (
-    <div style={{ width: "100%", marginBottom: "40px" }}>
+    <div style={{ width: "100%", marginBottom: "clamp(1.5rem, 5vw, 2.5rem)" }}>
       {/* Header with Pulsing Badge */}
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "24px",
+          marginBottom: "clamp(0.75rem, 2vw, 1.25rem)",
+          flexWrap: "wrap",
+          gap: "0.5rem",
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          <h2 style={{ fontSize: "1.125rem", fontWeight: 700, color: "var(--accent-text)", margin: 0 }}>
+          <h2 style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)", fontWeight: 600, color: "var(--color-900)", margin: 0 }}>
             Shopping Guide
           </h2>
           <div
             style={{
-              fontSize: "0.6rem",
-              fontWeight: 700,
+              fontSize: "0.55rem",
+              fontWeight: 600,
               letterSpacing: "0.1em",
-              color: "var(--error-text)",
-              backgroundColor: "var(--error-bg)",
-              border: "1px solid var(--error-border)",
+              color: "var(--color-error-text)",
+              backgroundColor: "var(--color-error-light)",
+              border: "1px solid var(--color-error-border)",
               padding: "2px 6px",
               borderRadius: "999px",
               marginLeft: "0.5rem",
@@ -270,8 +276,8 @@ export default function InfoCards() {
         
         <span
           style={{
-            fontSize: "0.8rem",
-            color: "var(--primary-text)",
+            fontSize: "clamp(0.75rem, 2vw, 0.825rem)",
+            color: "var(--color-primary)",
             cursor: "pointer",
             fontWeight: 600,
           }}

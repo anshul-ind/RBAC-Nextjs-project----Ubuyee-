@@ -102,14 +102,13 @@ const headlineLines = [
   {
     text: "Live Better.",
     style: {
-      fontSize: "clamp(1.4rem, 3vw, 2.6rem)",
+      fontSize: "clamp(1.5rem, 6vw, 2.6rem)",
       fontWeight: 900,
-      color: "#f97316",
+      color: "var(--color-primary)",
       lineHeight: 1.05,
       letterSpacing: "-0.04em",
-      marginTop: "0.1rem",
-      // fontFamily: "'Soria', 'DM Sans', sans-serif",
-       fontFamily: "'Soria'",
+      marginTop: "0.25rem",
+      fontFamily: "'Soria'",
     },
     delay: 0.2,
   },
@@ -117,7 +116,7 @@ const headlineLines = [
     text: "Everything you need,",
     style: {
       fontSize: "clamp(1rem, 2vw, 1.5rem)",
-      fontWeight: 700,
+      fontWeight: 600,
       color: "#374151",
       lineHeight: 1.2,
       letterSpacing: "-0.02em",
@@ -248,9 +247,9 @@ export default function WelcomePage() {
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
-          maxWidth: "560px",
+          maxWidth: "min(100%, 800px)",
           margin: "0 auto",
-          padding: "2rem",
+          padding: "clamp(1.5rem, 5vw, 3rem)",
         }}
       >
         {/* 1. Logo */}
@@ -260,29 +259,31 @@ export default function WelcomePage() {
           transition={{ duration: 0.5, delay: 0 }}
           style={{ marginBottom: "1.5rem" }}
         >
-          <motion.div
-            animate={{ y: [0, -10, 0] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            whileHover={{
-              scale: 1.06,
-              transition: { type: "spring", stiffness: 350, damping: 14 },
-            }}
-            style={{
-              background: "rgba(252, 239, 239, 0.9)",
-              backdropFilter: "blur(20px)",
-              WebkitBackdropFilter: "blur(20px)",
-              borderRadius: "29rem",
-              boxShadow:
-                "0 8px 48px rgba(249,115,22,0.12), 0 2px 12px rgba(0,0,0,0.05), 0 0 0 1px #f3f4f6",
-              cursor: "default",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "0.2em",
-            }}
-          >
-            <UbuyeeLogo size="lg" />
-          </motion.div>
+          <div style={{ marginBottom: "clamp(0.75rem, 2vw, 1rem)" }}>
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+              whileHover={{
+                scale: 1.06,
+                transition: { type: "spring", stiffness: 350, damping: 14 },
+              }}
+              style={{
+                background: "rgba(252, 239, 239, 0.9)",
+                backdropFilter: "blur(20px)",
+                WebkitBackdropFilter: "blur(20px)",
+                borderRadius: "29rem",
+                boxShadow:
+                  "0 8px 48px rgba(249,115,22,0.12), 0 2px 12px rgba(0,0,0,0.05), 0 0 0 1px #f3f4f6",
+                cursor: "default",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "0.2em",
+              }}
+            >
+              <UbuyeeLogo size="lg" />
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* 2. Editorial headline — clamp sizes, nowrap, first-visit animation only */}
@@ -300,7 +301,7 @@ export default function WelcomePage() {
               transition={{ duration: 0.5, ease: "easeOut", delay: line.delay }}
               style={{
                 display: "block",
-                whiteSpace: "nowrap",
+                whiteSpace: i < 2 ? "nowrap" : "normal",
                 ...line.style,
               }}
             >
@@ -315,8 +316,9 @@ export default function WelcomePage() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "2rem",
-            marginBottom: "2rem",
+            gap: "clamp(1rem, 5vw, 2rem)",
+            marginBottom: "3rem",
+            flexWrap: "wrap",
           }}
         >
           {icons.map(({ key, Component, floatDelay }, index) => {
@@ -351,15 +353,15 @@ export default function WelcomePage() {
                   onMouseEnter={() => setHoveredIcon(index)}
                   onMouseLeave={() => setHoveredIcon(null)}
                   style={{
-                    width: "72px",
-                    height: "72px",
+                    width: "clamp(64px, 12vw, 72px)",
+                    height: "clamp(64px, 12vw, 72px)",
                     borderRadius: "50%",
-                    background: isHovered ? "#f97316" : "#fff7ed",
-                    border: `2px solid ${isHovered ? "#f97316" : "#fed7aa"}`,
+                    background: isHovered ? "var(--color-primary)" : "var(--color-50)",
+                    border: `2px solid ${isHovered ? "var(--color-primary)" : "var(--color-100)"}`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "background 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.25s ease, box-shadow 0.25s ease",
+                    transition: "all 0.25s cubic-bezier(0.34,1.56,0.64,1)",
                     cursor: "pointer",
                     boxShadow: isHovered
                       ? "0 12px 24px rgba(249,115,22,0.25)"
@@ -396,7 +398,7 @@ export default function WelcomePage() {
               borderRadius: "0.75rem",
               color: "#fff",
               fontSize: "1rem",
-              fontWeight: 700,
+              fontWeight: 600,
               fontFamily: "'DM Sans', sans-serif",
               letterSpacing: "0.02em",
               cursor: "pointer",

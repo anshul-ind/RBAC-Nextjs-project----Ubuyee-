@@ -9,9 +9,9 @@ export default function UbuyeeLogo({
   size = "md",
   onClick,
 }: UbuyeeLogoProps) {
-  const scale = size === "sm" ? 0.55
-              : size === "lg" ? 1.1
-              : 0.78
+  const scale = size === "sm" ? 0.38
+              : size === "lg" ? 0.72
+              : 0.52
 
   const w = Math.round(220 * scale)
   const h = Math.round(80 * scale)

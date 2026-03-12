@@ -10,8 +10,19 @@ import VendorTopNav from "@/components/shared/navigation/VendorTopNav"
 export default function VendorLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [checked, setChecked] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
   const router = useRouter()
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    const check = () => {
+      setIsDesktop(window.innerWidth >= 1024)
+      if (window.innerWidth >= 1024) setSidebarOpen(false) // Reset on resize
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
   
   const { user, isAuthenticated, isLoading } = useAppSelector(selectAuth)
   const role = user?.role
@@ -83,13 +94,14 @@ export default function VendorLayout({ children }: { children: React.ReactNode }
         position: "relative",
       }}
     >
-      {/* 1. OVERLAY (when sidebar open on mobile) */}
+      {/* 1. OVERLAY (covers entire screen, click to close) */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={() => setSidebarOpen(false)}
             style={{
               position: "fixed",
@@ -102,10 +114,40 @@ export default function VendorLayout({ children }: { children: React.ReactNode }
         )}
       </AnimatePresence>
 
-      {/* 2. SIDEBAR (slides from right) */}
+      {/* 2. MAIN CONTENT AREA (Takes full width, sidebar overlays) */}
+      <div
+        style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          width: "100%",
+          overflowX: "hidden",
+        }}
+      >
+        <VendorTopNav
+          onMenuClick={() => setSidebarOpen(true)}
+          sidebarOpen={sidebarOpen}
+        />
+        <main
+          style={{
+            padding: "clamp(1rem, 4vw, 2.5rem)",
+            flex: 1,
+            width: "100%",
+            maxWidth: "1400px",
+            margin: "0 auto",
+            boxSizing: "border-box",
+          }}
+        >
+          {children}
+        </main>
+      </div>
+
+      {/* 3. SIDEBAR (slides from right, fixed overlay) */}
       <AnimatePresence>
         {sidebarOpen && (
           <motion.aside
+            key="vendor-sidebar"
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -118,47 +160,20 @@ export default function VendorLayout({ children }: { children: React.ReactNode }
               position: "fixed",
               top: 0,
               right: 0,
-              width: "15rem",
+              width: "16rem",
               height: "100vh",
-              backgroundColor: "#ffffff",
-              borderLeft: "1px solid var(--neutral-border)",
+              backgroundColor: "var(--color-0)",
+              borderLeft: "1px solid var(--color-100)",
               zIndex: 40,
               display: "flex",
               flexDirection: "column",
               boxShadow: "-4px 0 24px rgba(0,0,0,0.08)",
             }}
           >
-            <VendorSidebar onClose={() => setSidebarOpen(false)} />
+            <VendorSidebar onClose={() => setSidebarOpen(false)} isMobile={true} />
           </motion.aside>
         )}
       </AnimatePresence>
-
-      {/* 3. MAIN CONTENT AREA */}
-      <div
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-        }}
-      >
-        <VendorTopNav
-          onMenuClick={() => setSidebarOpen(true)}
-          sidebarOpen={sidebarOpen}
-        />
-        <main
-          style={{
-            padding: "2rem",
-            flex: 1,
-            width: "100%",
-            maxWidth: "1400px",
-            margin: "0 auto",
-            boxSizing: "border-box",
-          }}
-        >
-          {children}
-        </main>
-      </div>
     </div>
   )
 }

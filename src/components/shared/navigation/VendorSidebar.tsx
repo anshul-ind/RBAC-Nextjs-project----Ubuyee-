@@ -17,6 +17,7 @@ import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
 
 interface VendorSidebarProps {
   onClose: () => void;
+  isMobile?: boolean;
 }
 
 interface NavItemProps {
@@ -66,7 +67,7 @@ const NavItem = ({ label, icon: Icon, path, isActive, onClick }: NavItemProps) =
   );
 };
 
-export default function VendorSidebar({ onClose }: VendorSidebarProps) {
+export default function VendorSidebar({ onClose, isMobile }: VendorSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -92,40 +93,50 @@ export default function VendorSidebar({ onClose }: VendorSidebarProps) {
       <div
         style={{
           padding: "0 1rem",
-          borderBottom: "1px solid var(--neutral-border)",
+          borderBottom: "1px solid #f3f4f6",
           height: "4rem",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <button
-          onClick={onClose}
-          style={{
-            width: "2rem",
-            height: "2rem",
-            borderRadius: "8px",
-            backgroundColor: "var(--color-50)",
-            border: "1px solid var(--neutral-border)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "var(--color-700)",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--color-primary-light)";
-            e.currentTarget.style.color = "var(--color-primary)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--color-50)";
-            e.currentTarget.style.color = "var(--color-700)";
-          }}
-        >
-          <X size={18} />
-        </button>
-        <div>
+        {/* Close Button on LEFT */}
+        {isMobile && (
+          <button
+            onClick={onClose}
+            style={{
+              width: "2rem",
+              height: "2rem",
+              borderRadius: "8px",
+              backgroundColor: "#f9fafb",
+              border: "1px solid #f3f4f6",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              cursor: "pointer",
+              color: "#6b7280",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#fff7ed";
+              e.currentTarget.style.color = "#f97316";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#f9fafb";
+              e.currentTarget.style.color = "#6b7280";
+            }}
+          >
+            <X size={18} />
+          </button>
+        )}
+
+        {/* Logo on RIGHT */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          {!isMobile && (
+            <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--color-900)" }}>
+              Store<span style={{ color: "var(--color-primary)" }}>Pro</span>
+            </span>
+          )}
           <UbuyeeLogo size="sm" />
         </div>
       </div>
@@ -135,7 +146,7 @@ export default function VendorSidebar({ onClose }: VendorSidebarProps) {
         <div
           style={{
             fontSize: "0.65rem",
-            fontWeight: 700,
+            fontWeight: 600,
             letterSpacing: "0.15em",
             textTransform: "uppercase",
             color: "#9ca3af",
@@ -208,7 +219,7 @@ export default function VendorSidebar({ onClose }: VendorSidebarProps) {
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
           <span style={{ fontSize: "1.25rem" }}>🏪</span>
           <div>
-            <div style={{ fontSize: "0.8rem", fontWeight: 700, color: "#111827" }}>My Store</div>
+            <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#111827" }}>My Store</div>
             <div style={{ fontSize: "0.7rem", color: "#9ca3af" }}>Vendor Portal</div>
           </div>
         </div>
@@ -219,7 +230,7 @@ export default function VendorSidebar({ onClose }: VendorSidebarProps) {
             backgroundColor: "var(--primary-text)",
             color: "white",
             fontSize: "0.75rem",
-            fontWeight: 700,
+            fontWeight: 600,
             padding: "0.5rem",
             borderRadius: "8px",
             border: "none",

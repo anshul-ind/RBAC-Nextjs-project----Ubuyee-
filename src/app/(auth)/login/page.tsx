@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
@@ -17,7 +17,7 @@ interface RoleCardProps {
   index: number;
 }
 
-const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
+const RoleCard = ({ title, icon, path, index, isPhone }: RoleCardProps & { isPhone: boolean }) => {
   const router = useRouter();
 
   return (
@@ -42,21 +42,22 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
       }}
       onClick={() => router.push(path)}
       style={{
-        width: "200px",
-        height: "200px",
+        width: isPhone ? "100%" : "clamp(240px, 30vw, 300px)",
+        padding: "clamp(1.5rem, 4vw, 2rem)",
         backgroundColor: "var(--color-0)",
         border: "1.5px solid #f3f4f6",
-        borderRadius: "24px",
+        borderRadius: "var(--radius-2xl)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        gap: "1rem",
+        gap: "clamp(0.5rem, 2vw, 1rem)",
         cursor: "pointer",
         position: "relative",
         overflow: "hidden",
         boxShadow: "0 2px 12px rgba(0,0,0,0.04)",
         transition: "border-color 0.2s ease",
+        flexShrink: 0,
       }}
     >
       {/* Inner Glow on Hover */}
@@ -85,14 +86,14 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
           rotate: [0, -8, 8, -4, 0],
         }}
         style={{
-          width: "5rem",
-          height: "5rem",
-          borderRadius: "20px",
+          width: "clamp(4rem, 10vw, 5rem)",
+          height: "clamp(4rem, 10vw, 5rem)",
+          borderRadius: "18px",
           backgroundColor: "var(--color-primary-light)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: "2.5rem",
+          fontSize: "clamp(2rem, 5vw, 2.5rem)",
           zIndex: 1,
         }}
       >
@@ -132,6 +133,14 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
 
 export default function LoginSelectorPage() {
   const router = useRouter();
+  const [isPhone, setIsPhone] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsPhone(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const backgroundOrbs = (
     <>
@@ -202,7 +211,7 @@ export default function LoginSelectorPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1, duration: 0.5 }}
             style={{
-              fontSize: "2.25rem",
+              fontSize: "clamp(1.75rem, 6vw, 2.25rem)",
               fontWeight: 800,
               color: "var(--color-900)",
               margin: 0,
@@ -227,9 +236,22 @@ export default function LoginSelectorPage() {
         </div>
 
         {/* Roles Row */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1.5rem", maxWidth: "560px", margin: "0 auto" }}>
-          <RoleCard index={0} title="Customer" icon="🛍️" path="/user/login" />
-          <RoleCard index={1} title="Vendor" icon="🏪" path="/vendor/login" />
+        <div 
+          style={{ 
+            display: "flex",
+            flexDirection: isPhone ? "column" : "row",
+            gap: "clamp(1rem, 3vw, 1.5rem)",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            maxWidth: isPhone ? "360px" : "680px",
+            margin: "0 auto",
+            padding: "0 1.5rem",
+            boxSizing: "border-box"
+          }}
+        >
+          <RoleCard index={0} title="Customer" icon="🛍️" path="/user/login" isPhone={isPhone} />
+          <RoleCard index={1} title="Vendor" icon="🏪" path="/vendor/login" isPhone={isPhone} />
         </div>
 
         {/* Footer Section */}
@@ -242,10 +264,10 @@ export default function LoginSelectorPage() {
           {/* Divider */}
           <div
             style={{
-              width: "24rem",
+              width: "min(90%, 24rem)",
               height: "1px",
               background: "linear-gradient(to right, transparent, #e5e7eb, transparent)",
-              margin: "2.5rem auto 1.5rem",
+              margin: "clamp(1.5rem, 5vw, 2.5rem) auto 1.5rem",
             }}
           />
 

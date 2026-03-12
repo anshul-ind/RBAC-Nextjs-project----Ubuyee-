@@ -145,11 +145,11 @@ export default function DealCarousel() {
           width: "100%",
           position: "relative",
           overflow: "hidden",
-          borderRadius: "20px",
+          borderRadius: "var(--radius-2xl)",
           background: "var(--color-0)",
           border: "1px solid var(--color-100)",
           boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-          height: "420px",
+          height: "clamp(220px, 50vw, 420px)",
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
@@ -158,13 +158,13 @@ export default function DealCarousel() {
         <div
           style={{
             position: "absolute",
-            top: "16px",
-            right: "20px",
-            fontSize: "12px",
+            top: "clamp(0.75rem, 2vw, 1rem)",
+            right: "clamp(0.75rem, 2vw, 1.25rem)",
+            fontSize: "10px",
             fontFamily: "monospace",
             color: "var(--color-500)",
             background: "rgba(255,255,255,0.9)",
-            padding: "4px 12px",
+            padding: "2px 10px",
             borderRadius: "var(--radius-full)",
             border: "1px solid var(--color-100)",
             zIndex: 20,
@@ -178,33 +178,23 @@ export default function DealCarousel() {
           onClick={goPrev}
           style={{
             position: "absolute",
-            left: "20px",
+            left: "clamp(0.5rem, 2vw, 1rem)",
             top: "50%",
             transform: "translateY(-50%)",
-            zIndex: 20,
-            width: "48px",
-            height: "48px",
+            zIndex: 25,
+            width: "clamp(2rem, 8vw, 2.75rem)",
+            height: "clamp(2rem, 8vw, 2.75rem)",
             borderRadius: "50%",
             background: "rgba(255,255,255,0.95)",
             border: "1px solid #e5e7eb",
             boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-            fontSize: "18px",
+            fontSize: "clamp(0.7rem, 2vw, 1rem)",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "#111827",
             transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#f97316";
-            e.currentTarget.style.color = "white";
-            e.currentTarget.style.borderColor = "#f97316";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.95)";
-            e.currentTarget.style.color = "#111827";
-            e.currentTarget.style.borderColor = "#e5e7eb";
           }}
         >
           ←
@@ -214,33 +204,23 @@ export default function DealCarousel() {
           onClick={goNext}
           style={{
             position: "absolute",
-            right: "20px",
+            right: "clamp(0.5rem, 2vw, 1rem)",
             top: "50%",
             transform: "translateY(-50%)",
-            zIndex: 20,
-            width: "48px",
-            height: "48px",
+            zIndex: 25,
+            width: "clamp(2rem, 8vw, 2.75rem)",
+            height: "clamp(2rem, 8vw, 2.75rem)",
             borderRadius: "50%",
             background: "rgba(255,255,255,0.95)",
             border: "1px solid #e5e7eb",
             boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-            fontSize: "18px",
+            fontSize: "clamp(0.7rem, 2vw, 1rem)",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             color: "#111827",
             transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#f97316";
-            e.currentTarget.style.color = "white";
-            e.currentTarget.style.borderColor = "#f97316";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.95)";
-            e.currentTarget.style.color = "#111827";
-            e.currentTarget.style.borderColor = "#e5e7eb";
           }}
         >
           →
@@ -266,41 +246,47 @@ export default function DealCarousel() {
                 minWidth: "100%",
                 width: "100%",
                 flexShrink: 0,
-                height: "420px",
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
+                height: "100%",
                 background: "#ffffff",
                 position: "relative",
                 boxSizing: "border-box",
                 overflow: "hidden",
               }}
             >
-              {/* Left Side: Text */}
-              <div 
-                style={{ 
-                  padding: "56px 56px 56px 64px",
-                  display: "flex", 
-                  flexDirection: "column", 
-                  justifyContent: "center",
-                  background: "var(--color-0)",
-                  height: "100%",
-                  overflow: "hidden",
-                  boxSizing: "border-box"
+              <Image
+                src={slide.image}
+                alt={slide.tag}
+                fill
+                priority={index === 1}
+                style={{ objectFit: "cover", objectPosition: "center", display: "block" }}
+              />
+              
+              {/* Text Overlay */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  padding: "clamp(0.75rem, 3vw, 1.5rem)",
+                  paddingBottom: "clamp(1.5rem, 5vw, 2.5rem)",
+                  background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)",
+                  zIndex: 10,
+                  color: "white",
                 }}
               >
                 <span
                   style={{
-                    fontSize: "11px",
+                    fontSize: "clamp(0.6rem, 2vw, 0.75rem)",
                     fontWeight: 700,
-                    letterSpacing: "0.15em",
+                    letterSpacing: "0.1em",
                     textTransform: "uppercase",
                     color: "var(--color-primary)",
-                    background: "var(--color-primary-light)",
-                    padding: "6px 14px",
-                    borderRadius: "var(--radius-full)",
+                    background: "rgba(255,255,255,0.9)",
+                    padding: "2px 8px",
+                    borderRadius: "4px",
                     display: "inline-block",
-                    width: "fit-content",
-                    marginBottom: "20px",
+                    marginBottom: "0.5rem",
                   }}
                 >
                   {slide.tag}
@@ -308,11 +294,14 @@ export default function DealCarousel() {
 
                 <h3
                   style={{
-                    fontSize: "42px",
+                    fontSize: "clamp(1rem, 4vw, 1.75rem)",
                     fontWeight: 800,
-                    color: "var(--color-900)",
-                    lineHeight: 1.1,
-                    margin: "0 0 16px 0",
+                    color: "white",
+                    margin: "0 0 0.25rem 0",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    maxWidth: "80%",
                   }}
                 >
                   {slide.headline}{" "}
@@ -321,64 +310,19 @@ export default function DealCarousel() {
 
                 <p
                   style={{
-                    fontSize: "15px",
-                    color: "var(--color-500)",
-                    lineHeight: 1.65,
-                    margin: "0 0 32px 0",
-                    maxWidth: "340px",
+                    fontSize: "clamp(0.7rem, 2.5vw, 0.875rem)",
+                    color: "rgba(255,255,255,0.85)",
+                    lineHeight: 1.4,
+                    margin: "0",
+                    maxWidth: "75%",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
                   }}
                 >
                   {slide.subtitle}
                 </p>
-
-                <button
-                  style={{
-                    background: "var(--color-900)",
-                    color: "white",
-                    fontSize: "14px",
-                    fontWeight: 700,
-                    padding: "14px 28px",
-                    borderRadius: "var(--radius-full)",
-                    border: "none",
-                    cursor: "pointer",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "10px",
-                    width: "fit-content",
-                    transition: "background 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-900)")}
-                >
-                  {slide.button} <span style={{ fontSize: "18px" }}>→</span>
-                </button>
-              </div>
-
-              {/* Right Side: Image */}
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  position: "relative",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    zIndex: 2,
-                    background: "linear-gradient(to right, white 0%, transparent 20%)",
-                    pointerEvents: "none",
-                  }}
-                />
-                <Image
-                  src={slide.image}
-                  alt={slide.tag}
-                  fill
-                  priority={index === 1}
-                  style={{ objectFit: "cover", objectPosition: "center", display: "block" }}
-                />
               </div>
             </div>
           ))}

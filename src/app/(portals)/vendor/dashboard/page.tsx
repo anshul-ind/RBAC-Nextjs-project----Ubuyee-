@@ -73,49 +73,41 @@ export default function VendorDashboardPage() {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "1.5rem",
+          marginBottom: "clamp(1rem, 4vw, 1.5rem)",
+          flexWrap: "wrap",
+          gap: "1rem",
         }}
       >
-        <h2 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#111827", margin: 0 }}>
+        <h2 style={{ fontSize: "clamp(1.1rem, 3vw, 1.5rem)", fontWeight: 700, color: "var(--color-900)", margin: 0 }}>
           My Store Overview
         </h2>
-        <div style={{ display: "flex", gap: "0.75rem" }}>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
           <button
             style={{
-              backgroundColor: "#ffffff",
-              border: "1px solid #e5e7eb",
-              color: "#374151",
+              backgroundColor: "var(--color-0)",
+              border: "1px solid var(--color-100)",
+              color: "var(--color-700)",
               fontSize: "0.8rem",
               padding: "0.5rem 1rem",
-              borderRadius: "8px",
+              borderRadius: "10px",
               cursor: "pointer",
               transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "var(--primary-text)";
-              e.currentTarget.style.color = "var(--primary-text)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#e5e7eb";
-              e.currentTarget.style.color = "#374151";
             }}
           >
             Export ↓
           </button>
           <button
             style={{
-              backgroundColor: "var(--primary-text)",
+              backgroundColor: "var(--color-900)",
               color: "white",
               fontSize: "0.8rem",
-              fontWeight: 700,
+              fontWeight: 600,
               padding: "0.5rem 1rem",
-              borderRadius: "8px",
+              borderRadius: "10px",
               border: "none",
               cursor: "pointer",
-              transition: "background 0.2s ease",
+              transition: "all 0.2s ease",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
-            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-text)")}
           >
             + Add Product
           </button>
@@ -126,30 +118,30 @@ export default function VendorDashboardPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: "1.25rem",
-          marginBottom: "1.5rem",
+          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+          gap: "clamp(0.75rem, 2vw, 1.25rem)",
+          marginBottom: "clamp(1.5rem, 4vw, 2rem)",
         }}
       >
         {statsData.map((stat, i) => (
           <motion.div
             key={i}
-            whileHover={{ y: -4, scale: 1.02, boxShadow: "0 12px 28px rgba(249,115,22,0.1)", borderColor: "#fed7aa" }}
+            whileHover={{ y: -4, boxShadow: "0 12px 28px rgba(0,0,0,0.06)" }}
             style={{
-              backgroundColor: "#ffffff",
-              border: "1px solid var(--neutral-border)",
-              borderRadius: "16px",
-              padding: "1.25rem 1.5rem",
+              backgroundColor: "var(--color-0)",
+              border: "1px solid var(--color-100)",
+              borderRadius: "var(--radius-2xl)",
+              padding: "clamp(1rem, 3vw, 1.5rem)",
               cursor: "pointer",
-              transition: "all 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+              transition: "all 0.25s ease",
             }}
           >
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "clamp(0.5rem, 2vw, 1rem)" }}>
               <div
                 style={{
-                  width: "2.5rem",
-                  height: "2.5rem",
-                  borderRadius: "12px",
+                  width: "2.25rem",
+                  height: "2.25rem",
+                  borderRadius: "10px",
                   backgroundColor: stat.bg,
                   display: "flex",
                   alignItems: "center",
@@ -157,16 +149,16 @@ export default function VendorDashboardPage() {
                   color: stat.color,
                 }}
               >
-                <stat.icon size={20} />
+                <stat.icon size={18} />
               </div>
             </div>
-            <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#111827", marginBottom: "0.25rem" }}>
+            <div style={{ fontSize: "clamp(1.25rem, 4vw, 1.75rem)", fontWeight: 700, color: "var(--color-900)", marginBottom: "2px" }}>
               {stat.value}
             </div>
-            <div style={{ fontSize: "0.875rem", color: "#6b7280", fontWeight: 500, marginBottom: "0.5rem" }}>
+            <div style={{ fontSize: "0.825rem", color: "var(--color-500)", fontWeight: 500, marginBottom: "0.375rem" }}>
               {stat.label}
             </div>
-            <div style={{ fontSize: "0.75rem", color: stat.trendColor, fontWeight: 600 }}>{stat.trend}</div>
+            <div style={{ fontSize: "0.7rem", color: stat.trendColor, fontWeight: 600 }}>{stat.trend}</div>
           </motion.div>
         ))}
       </div>
@@ -227,35 +219,37 @@ export default function VendorDashboardPage() {
       >
         <div
           style={{
-            padding: "1rem 1.5rem",
+            padding: "clamp(0.75rem, 2vw, 1rem) clamp(1rem, 3vw, 1.5rem)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            borderBottom: "1px solid #f9fafb",
+            borderBottom: "1px solid var(--color-100)",
+            flexWrap: "wrap",
+            gap: "0.5rem",
           }}
         >
-          <span style={{ fontSize: "0.8rem", color: "#6b7280" }}>Showing 1-5 of 12 results</span>
-          <span style={{ fontSize: "0.8rem", color: "#6b7280", display: "flex", alignItems: "center", gap: "4px", cursor: "pointer" }}>
-            Results per page: 5 <ChevronDown size={14} />
+          <span style={{ fontSize: "0.75rem", color: "var(--color-500)" }}>Showing 1-5 of 12 results</span>
+          <span style={{ fontSize: "0.75rem", color: "var(--color-500)", display: "flex", alignItems: "center", gap: "4px", cursor: "pointer" }}>
+            Results per page: 5 <ChevronDown size={12} />
           </span>
         </div>
 
-        <div style={{ width: "100%", overflowX: "auto" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div style={{ width: "100%", overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+          <table style={{ width: "100%", minWidth: "800px", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid var(--neutral-border)" }}>
-                <th style={{ padding: "0.75rem 1.5rem", textAlign: "left" }}><input type="checkbox" /></th>
+              <tr style={{ backgroundColor: "var(--color-50)", borderBottom: "1px solid var(--color-100)" }}>
+                <th style={{ padding: "1rem 1.5rem", textAlign: "left" }}><input type="checkbox" /></th>
                 {["Product Name", "Category", "Status", "Price", "Sales", "Action"].map((h) => (
                   <th
                     key={h}
                     style={{
-                      padding: "0.75rem 1.5rem",
+                      padding: "1rem 1.5rem",
                       textAlign: "left",
-                      fontSize: "0.72rem",
-                      fontWeight: 700,
-                      letterSpacing: "0.05em",
+                      fontSize: "0.65rem",
+                      fontWeight: 600,
+                      letterSpacing: "0.1em",
                       textTransform: "uppercase",
-                      color: "#9ca3af",
+                      color: "var(--color-400)",
                     }}
                   >
                     {h}
@@ -311,9 +305,9 @@ export default function VendorDashboardPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-          gap: "1.25rem",
-          marginTop: "1.5rem",
+          gridTemplateColumns: "repeat(auto-fit, minmax(clamp(280px, 100%, 500px), 1fr))",
+          gap: "clamp(1rem, 3vw, 1.25rem)",
+          marginTop: "clamp(1.5rem, 4vw, 2rem)",
         }}
       >
         <ChartCard title="Sales Trend">
@@ -400,18 +394,20 @@ const ActionButton = ({ icon: Icon, color }: { icon: any; color: string }) => (
 const ChartCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div
     style={{
-      backgroundColor: "#ffffff",
-      border: "1px solid var(--neutral-border)",
-      borderRadius: "16px",
-      padding: "1.25rem",
+      backgroundColor: "var(--color-0)",
+      border: "1px solid var(--color-100)",
+      borderRadius: "var(--radius-2xl)",
+      padding: "clamp(1rem, 3vw, 1.5rem)",
       transition: "box-shadow 0.3s ease",
     }}
-    onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 4px 20px rgba(249,115,22,0.08)")}
+    onMouseEnter={(e) => (e.currentTarget.style.boxShadow = "0 4px 20px rgba(0,0,0,0.05)")}
     onMouseLeave={(e) => (e.currentTarget.style.boxShadow = "none")}
   >
-    <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "#111827", marginBottom: "1.25rem" }}>
+    <h3 style={{ fontSize: "clamp(0.9rem, 2.5vw, 1.1rem)", fontWeight: 600, color: "var(--color-900)", marginBottom: "clamp(1rem, 3vw, 1.5rem)" }}>
       {title}
     </h3>
-    {children}
+    <div style={{ width: "100%", overflow: "hidden" }}>
+      {children}
+    </div>
   </div>
 );

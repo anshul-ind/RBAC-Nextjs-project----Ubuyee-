@@ -115,8 +115,8 @@ const ProductCard = ({
 
   const imageContainerStyle: React.CSSProperties = {
     width: "100%",
-    height: "140px",
-    borderRadius: "var(--radius-lg)",
+    aspectRatio: "1 / 1",
+    borderRadius: "var(--radius-xl)",
     overflow: "hidden",
     backgroundColor: "var(--color-50)",
     border: isOrange ? "2px solid rgba(255,255,255,0.3)" : "none",
@@ -124,8 +124,8 @@ const ProductCard = ({
   };
 
   const nameStyle: React.CSSProperties = {
-    fontSize: "0.8rem",
-    fontWeight: 700,
+    fontSize: "clamp(0.7rem, 2.5vw, 0.825rem)",
+    fontWeight: 600,
     color: isOrange ? "#ffffff" : "#111827",
     margin: 0,
     transition: "all 0.25s ease",
@@ -157,15 +157,15 @@ const ProductCard = ({
   };
 
   const priceStyle: React.CSSProperties = {
-    fontSize: "0.95rem",
-    fontWeight: 800,
+    fontSize: "clamp(0.85rem, 3vw, 1.1rem)",
+    fontWeight: 700,
     color: isOrange ? "#ffffff" : "#111827",
     transition: "all 0.25s ease",
   };
 
   const addButtonStyle: React.CSSProperties = {
-    width: "1.75rem",
-    height: "1.75rem",
+    width: "clamp(1.5rem, 6vw, 2rem)",
+    height: "clamp(1.5rem, 6vw, 2rem)",
     borderRadius: "8px",
     backgroundColor: isOrange ? "var(--color-0)" : "var(--color-primary)",
     color: isOrange ? "var(--color-primary)" : "var(--color-0)",
@@ -176,7 +176,7 @@ const ProductCard = ({
     cursor: "pointer",
     transition: "all 0.15s ease",
     fontSize: "1rem",
-    fontWeight: 700,
+    fontWeight: 600,
   };
 
   return (
@@ -235,6 +235,18 @@ const ProductCard = ({
 
 export default function BestProducts() {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
+  const [cols, setCols] = useState(4);
+
+  React.useEffect(() => {
+    const check = () => {
+      if (window.innerWidth >= 1024) setCols(4);
+      else if (window.innerWidth >= 640) setCols(3);
+      else setCols(2);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   return (
     <section style={{ marginBottom: "2.5rem" }}>
@@ -247,8 +259,8 @@ export default function BestProducts() {
         }}
       >
         <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
-          <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--color-primary)" }}>Best</span>
-          <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--color-900)" }}>Products</span>
+          <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--color-primary)" }}>Best</span>
+          <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--color-900)" }}>Products</span>
         </div>
 
         <span
@@ -268,8 +280,8 @@ export default function BestProducts() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "1rem",
+          gridTemplateColumns: `repeat(${cols}, 1fr)`,
+          gap: "clamp(0.75rem, 2vw, 1.25rem)",
         }}
       >
         {products.map((product) => (

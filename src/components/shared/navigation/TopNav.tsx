@@ -32,6 +32,18 @@ export default function TopNav() {
   const { user, role } = useAppSelector(selectAuth);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
+
+  React.useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth < 1024);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Navigation Links
   const navLinks = [
@@ -66,14 +78,14 @@ export default function TopNav() {
     >
       <div
         style={{
-          maxWidth: space.pageMaxWidth,
+          maxWidth: "var(--page-max-width)",
           margin: "0 auto",
-          padding: `0 ${space.pagePadding}`,
-          height: space.navHeight,
+          padding: "0 clamp(1rem, 5vw, 2.5rem)",
+          height: "var(--nav-height)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 0,
+          gap: "clamp(0.5rem, 2vw, 1rem)",
         }}
       >
         {/* TASK 1: LEFT SECTION - LOGO */}
@@ -92,47 +104,46 @@ export default function TopNav() {
         <div
           style={{
             flex: 1,
-            display: "flex",
+            display: isTablet ? "none" : "flex",
             alignItems: "center",
             justifyContent: "center",
             gap: "0.25rem",
           }}
-          className="hidden md:flex"
         >
           {navLinks.map((link) => {
-  const isHovered = hoveredLink === link.path;
+            const isHovered = hoveredLink === link.path;
+            const isActive = checkActive(link.path);
 
-  return (
-    <Link
-      key={link.path}
-      href={link.path}
-      onMouseEnter={() => setHoveredLink(link.path)}
-      onMouseLeave={() => setHoveredLink(null)}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "0.375rem",
-        padding: "0.5rem 1rem",
-        borderRadius: radius.lg,
-        fontSize: "0.875rem",
-        fontWeight: isHovered ? 600 : 500,
-        color: isHovered ? primary.DEFAULT : neutral[500],
-        textDecoration: "none",
-        backgroundColor: isHovered ? primary.light : "transparent",
-        transition: "all 0.15s ease",
-        whiteSpace: "nowrap",
-        transform: isHovered ? "translateY(-1px)" : "translateY(0)",
-      }}
-    >
-      <link.icon
-        size={16}
-        color={isHovered ? "#f97316" : "#9ca3af"}
-        style={{ transition: "color 0.15s ease" }}
-      />
-      <span>{link.label}</span>
-    </Link>
-  );
-})}
+            return (
+              <Link
+                key={link.path}
+                href={link.path}
+                onMouseEnter={() => setHoveredLink(link.path)}
+                onMouseLeave={() => setHoveredLink(null)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.4rem",
+                  padding: "0.5rem clamp(0.6rem, 1.5vw, 1rem)",
+                  borderRadius: radius.lg,
+                  fontSize: "0.875rem",
+                  fontWeight: isActive || isHovered ? 600 : 500,
+                  color: isActive || isHovered ? primary.DEFAULT : neutral[500],
+                  textDecoration: "none",
+                  backgroundColor: isActive || isHovered ? primary.light : "transparent",
+                  transition: "all 0.15s ease",
+                  whiteSpace: "nowrap",
+                  transform: isHovered ? "translateY(-1px)" : "translateY(0)",
+                }}
+              >
+                <link.icon
+                  size={16}
+                  style={{ transition: "color 0.15s ease" }}
+                />
+                <span>{link.label}</span>
+              </Link>
+            );
+          })}
         </div>
 
         {/* TASK 4: RIGHT SECTION - USER ACTIONS */}
@@ -170,7 +181,7 @@ export default function TopNav() {
                 backgroundColor: "#f97316",
                 color: "white",
                 fontSize: "0.6rem",
-                fontWeight: 700,
+                fontWeight: 600,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -183,27 +194,29 @@ export default function TopNav() {
           </div>
 
           {/* Lock Icon */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "2.25rem",
-              height: "2.25rem",
-              cursor: "pointer",
-              transition: "color 0.15s ease",
-            }}
-            onMouseEnter={(e) => {
-              const icon = e.currentTarget.querySelector('svg');
-              if (icon) icon.style.color = "#f97316";
-            }}
-            onMouseLeave={(e) => {
-              const icon = e.currentTarget.querySelector('svg');
-              if (icon) icon.style.color = "#374151";
-            }}
-          >
-            <FiLock size={18} color="#374151" style={{ transition: "color 0.15s ease" }} />
-          </div>
+          {!isMobile && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "2.25rem",
+                height: "2.25rem",
+                cursor: "pointer",
+                transition: "color 0.15s ease",
+              }}
+              onMouseEnter={(e) => {
+                const icon = e.currentTarget.querySelector('svg');
+                if (icon) icon.style.color = "#f97316";
+              }}
+              onMouseLeave={(e) => {
+                const icon = e.currentTarget.querySelector('svg');
+                if (icon) icon.style.color = "#374151";
+              }}
+            >
+              <FiLock size={18} color="#374151" style={{ transition: "color 0.15s ease" }} />
+            </div>
+          )}
 
           {/* Vertical Divider */}
           <div style={{ width: "1px", height: "1.5rem", backgroundColor: "#e5e7eb", flexShrink: 0 }} />
@@ -233,23 +246,25 @@ export default function TopNav() {
                 alignItems: "center",
                 justifyContent: "center",
                 fontSize: "0.8rem",
-                fontWeight: 700,
+                fontWeight: 600,
                 color: "#f97316",
                 flexShrink: 0,
               }}
             >
               {user?.name ? user.name[0].toUpperCase() : "U"}
             </div>
-            <span
-              style={{
-                fontSize: "0.875rem",
-                fontWeight: 600,
-                color: "#374151",
-                textTransform: "capitalize",
-              }}
-            >
-              {role ?? "User"}
-            </span>
+            {!isMobile && (
+              <span
+                style={{
+                  fontSize: "0.875rem",
+                  fontWeight: 600,
+                  color: "#374151",
+                  textTransform: "capitalize",
+                }}
+              >
+                {role ?? "User"}
+              </span>
+            )}
           </div>
 
           {/* Sign Out Button */}
@@ -259,12 +274,12 @@ export default function TopNav() {
               display: "flex",
               alignItems: "center",
               gap: "0.4rem",
-              padding: "0.5rem 1.125rem",
+              padding: isMobile ? "0.5rem" : "0.5rem 1.125rem",
               borderRadius: "10px",
               backgroundColor: "#f97316",
               color: "white",
               fontSize: "0.825rem",
-              fontWeight: 700,
+              fontWeight: 600,
               border: "none",
               cursor: "pointer",
               whiteSpace: "nowrap",
@@ -280,73 +295,81 @@ export default function TopNav() {
               e.currentTarget.style.boxShadow = "none";
             }}
           >
-            <FiLogOut size={14} />
-            <span>Sign out</span>
+            <FiLogOut size={16} />
+            {!isMobile && <span>Sign out</span>}
           </button>
 
-          {/* Mobile Menu Toggle (Visible only on small screens) */}
+          {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             style={{
+              display: isTablet ? "flex" : "none",
               width: "2.25rem",
               height: "2.25rem",
-              border: "1px solid #f3f4f6",
-              borderRadius: "8px",
-              backgroundColor: "#f9fafb",
-              display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              borderRadius: "var(--radius-lg)",
+              border: "1px solid var(--color-100)",
+              background: "var(--color-50)",
               cursor: "pointer",
+              marginLeft: "0.5rem",
               color: "#374151",
             }}
-            className="md:hidden"
           >
-            {mobileOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+            {mobileOpen ? <FiX size={18} /> : <FiMenu size={18} />}
           </button>
         </div>
       </div>
 
       {/* MOBILE DROPDOWN */}
       <AnimatePresence>
-        {mobileOpen && (
+        {mobileOpen && isTablet && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
             style={{
-              backgroundColor: "#ffffff",
-              borderBottom: "1px solid #f3f4f6",
-              overflow: "hidden",
+              position: "fixed",
+              top: "var(--nav-height)",
+              left: 0,
+              right: 0,
+              backgroundColor: "var(--color-0)",
+              borderBottom: "1px solid var(--color-100)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+              zIndex: 29,
+              padding: "0.75rem 1rem",
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.25rem",
             }}
-            className="md:hidden"
           >
-            <div style={{ padding: "1rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {navLinks.map((link) => {
-                const isActive = checkActive(link.path);
-                return (
-                  <Link
-                    key={link.path}
-                    href={link.path}
-                    onClick={() => setMobileOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.75rem",
-                      padding: "0.75rem 1rem",
-                      borderRadius: "10px",
-                      fontSize: "0.95rem",
-                      fontWeight: isActive ? 600 : 500,
-                      color: isActive ? "#f97316" : "#4b5563",
-                      textDecoration: "none",
-                      backgroundColor: isActive ? "#fff7ed" : "transparent",
-                    }}
-                  >
-                    <link.icon size={18} />
-                    {link.label}
-                  </Link>
-                );
-              })}
-            </div>
+            {navLinks.map((link) => {
+              const isActive = checkActive(link.path);
+              return (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  onClick={() => setMobileOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    padding: "0.875rem 1rem",
+                    borderRadius: "var(--radius-lg)",
+                    fontSize: "var(--text-md)",
+                    fontWeight: 500,
+                    color: isActive ? "var(--color-primary)" : "var(--color-700)",
+                    textDecoration: "none",
+                    backgroundColor: isActive ? "var(--color-primary-light)" : "transparent",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <link.icon size={18} />
+                  {link.label}
+                </Link>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

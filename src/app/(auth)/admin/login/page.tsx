@@ -20,8 +20,9 @@ export default function AdminLoginPage() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
+        padding: "clamp(1rem, 4vw, 2.5rem)",
         position: "relative",
-        overflow: "hidden",
+        overflowY: "auto",
         fontFamily: "'Inter', sans-serif",
       }}
     >
@@ -60,14 +61,13 @@ export default function AdminLoginPage() {
         transition={{ duration: 0.5, ease: "easeOut" }}
         style={{
           background: "var(--color-0)",
-          border: "1px solid #f3f4f6",
-          borderRadius: "20px",
-          padding: "2.5rem 2rem",
-          width: "100%",
-          maxWidth: "420px",
+          border: "1px solid var(--color-100)",
+          borderRadius: "var(--radius-2xl)",
+          padding: "clamp(1.25rem, 4vw, 2rem)",
+          width: "clamp(300px, 88vw, 420px)",
           position: "relative",
           zIndex: 1,
-          boxShadow: "0 4px 32px rgba(0,0,0,0.08)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
         }}
       >
         {/* Orange top accent line */}
@@ -102,13 +102,13 @@ export default function AdminLoginPage() {
           >
             <FiShield size="1.5rem" />
           </div>
-          <div style={{ marginBottom: "0.75rem" }}>
+          <div style={{ marginBottom: "clamp(0.75rem, 2vw, 1rem)", display: "flex", justifyContent: "center" }}>
             <UbuyeeLogo size="md" />
           </div>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--color-900)", margin: "0 0 0.375rem" }}>
+          <h1 style={{ fontSize: "clamp(1.25rem, 4vw, 1.5rem)", fontWeight: "var(--font-extrabold)", color: "var(--color-900)", margin: "0 0 0.25rem" }}>
             Admin Portal
           </h1>
-          <p style={{ fontSize: "0.875rem", color: "var(--color-500)", margin: "0 0 2rem" }}>
+          <p style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)", color: "var(--color-500)", margin: "0 0 clamp(1rem, 3vw, 1.5rem)" }}>
             Authorized personnel only
           </p>
         </div>

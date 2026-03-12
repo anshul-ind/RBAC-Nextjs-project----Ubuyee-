@@ -17,6 +17,18 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen }: VendorTopNavP
   const router = useRouter();
   const { user } = useAppSelector(selectAuth);
   const userName = user?.name;
+  const [isMobile, setIsMobile] = React.useState(false);
+  const [isTablet, setIsTablet] = React.useState(false);
+
+  React.useEffect(() => {
+    const check = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth < 1024);
+    };
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -29,66 +41,68 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen }: VendorTopNavP
         position: "sticky",
         top: 0,
         zIndex: 20,
-        height: "4rem",
-        backgroundColor: "var(--neutral-bg)",
-        borderBottom: "1px solid var(--neutral-border)",
+        height: "var(--nav-height)",
+        backgroundColor: "var(--color-0)",
+        borderBottom: "1px solid var(--color-100)",
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: "0 2rem",
+        padding: "0 clamp(1rem, 3vw, 2rem)",
         boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
       }}
     >
       {/* Left Side: Portal Title */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <h1 style={{ fontSize: "1.125rem", fontWeight: 700, color: "#111827", margin: 0 }}>
-          Vendor Dashboard
+        <h1 style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)", fontWeight: 700, color: "var(--color-900)", margin: 0, letterSpacing: "-0.02em" }}>
+          {isMobile ? "Vendor" : "Vendor Portal"}
         </h1>
       </div>
 
       {/* Right Side: Search, Notifications, Profile */}
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
         {/* Search */}
-        <div style={{ position: "relative" }}>
-          <Search
-            size={16}
-            style={{
-              position: "absolute",
-              left: "0.875rem",
-              top: "50%",
-              transform: "translateY(-50%)",
-              color: "#9ca3af",
-            }}
-          />
-          <input
-            type="text"
-            placeholder="Search..."
-            style={{
-              width: "14rem",
-              backgroundColor: "var(--accent-bg)",
-              border: "1px solid var(--neutral-border)",
-              borderRadius: "10px",
-              padding: "0.375rem 0.875rem 0.375rem 2.25rem",
-              fontSize: "0.875rem",
-              transition: "all 0.2s ease",
-              outline: "none",
-            }}
-            onFocus={(e) => {
-              e.target.style.borderColor = "var(--primary-text)";
-              e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.08)";
-              e.target.style.backgroundColor = "var(--neutral-bg)";
-            }}
-            onBlur={(e) => {
-              e.target.style.borderColor = "var(--neutral-border)";
-              e.target.style.boxShadow = "none";
-              e.target.style.backgroundColor = "var(--accent-bg)";
-            }}
-          />
-        </div>
+        {!isMobile && (
+          <div style={{ position: "relative" }}>
+            <Search
+              size={16}
+              style={{
+                position: "absolute",
+                left: "0.875rem",
+                top: "50%",
+                transform: "translateY(-50%)",
+                color: "var(--color-400)",
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Search..."
+              style={{
+                width: isTablet ? "clamp(8rem, 20vw, 12rem)" : "16rem",
+                backgroundColor: "var(--color-50)",
+                border: "1px solid var(--color-100)",
+                borderRadius: "12px",
+                padding: "0.5rem 0.875rem 0.5rem 2.25rem",
+                fontSize: "0.875rem",
+                transition: "all 0.2s ease",
+                outline: "none",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = "var(--color-primary)";
+                e.target.style.boxShadow = "0 0 0 3px rgba(249,115,22,0.08)";
+                e.target.style.backgroundColor = "var(--color-0)";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "var(--color-100)";
+                e.target.style.boxShadow = "none";
+                e.target.style.backgroundColor = "var(--color-50)";
+              }}
+            />
+          </div>
+        )}
 
         {/* Notifications */}
         <div style={{ position: "relative", cursor: "pointer", display: "flex", alignItems: "center" }}>
-          <Bell size={20} style={{ color: "var(--neutral-muted)" }} />
+          <Bell size={20} style={{ color: "var(--color-600)" }} />
           <div
             style={{
               position: "absolute",
@@ -96,7 +110,7 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen }: VendorTopNavP
               right: "-2px",
               width: "6px",
               height: "6px",
-              backgroundColor: "#ef4444",
+              backgroundColor: "var(--color-error)",
               borderRadius: "50%",
               border: "1px solid white",
             }}
@@ -107,70 +121,70 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen }: VendorTopNavP
         <div style={{ width: "1px", height: "1.5rem", backgroundColor: "var(--neutral-border)" }} />
 
         {/* User Profile */}
-        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <div
             style={{
-              width: "2.25rem",
-              height: "2.25rem",
+              width: "2rem",
+              height: "2rem",
               borderRadius: "50%",
-              backgroundColor: "var(--primary-bg)",
-              border: "2px solid var(--primary-text)",
-              color: "var(--primary-text)",
+              backgroundColor: "var(--color-primary-light)",
+              border: "2px solid var(--color-primary)",
+              color: "var(--color-primary)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: "0.875rem",
-              fontWeight: 700,
+              fontSize: "0.75rem",
+              fontWeight: 600,
+              flexShrink: 0,
             }}
           >
-            {userName ? userName[0].toUpperCase() : ""}
+            {userName ? userName[0].toUpperCase() : "V"}
           </div>
-          <div style={{ display: "none", flexDirection: "column", gap: "1px" }} className="md:flex">
-            <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111827" }}>
-              {userName ?? ""}
-            </span>
-            <span
-              style={{
-                backgroundColor: "var(--primary-bg)",
-                color: "var(--primary-text)",
-                fontSize: "0.65rem",
-                fontWeight: 700,
-                padding: "2px 8px",
-                borderRadius: "999px",
-                width: "fit-content",
-              }}
-            >
-              Vendor
-            </span>
-          </div>
+          {!isMobile && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
+              <span style={{ fontSize: "0.825rem", fontWeight: 600, color: "var(--color-900)" }}>
+                {userName ?? "Vendor"}
+              </span>
+              <span
+                style={{
+                  color: "var(--color-primary)",
+                  fontSize: "0.65rem",
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                }}
+              >
+                Store Pro
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Logout */}
         <button
           onClick={handleLogout}
           style={{
-            marginLeft: "0.5rem",
-            backgroundColor: "var(--primary-text)",
+            marginLeft: "0.25rem",
+            backgroundColor: "var(--color-900)",
             color: "white",
             fontSize: "0.75rem",
-            fontWeight: 700,
-            padding: "0.5rem 1rem",
-            borderRadius: "8px",
+            fontWeight: 600,
+            padding: isMobile ? "0.5rem" : "0.5rem 1rem",
+            borderRadius: "10px",
             border: "none",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             gap: "0.5rem",
-            transition: "background 0.2s ease",
+            transition: "all 0.2s ease",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-hover)")}
-          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--primary-text)")}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-900)")}
         >
-          <LogOut size={14} />
-          Logout
+          <LogOut size={16} />
+          {!isMobile && "Logout"}
         </button>
 
-        {/* Hamburger Menu - Moved to far right */}
+        {/* Hamburger Menu - Visible on ALL screens - FAR RIGHT */}
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
@@ -194,7 +208,7 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen }: VendorTopNavP
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "#fff7ed";
             e.currentTarget.style.borderColor = "#fed7aa";
-            e.currentTarget.style.color = "var(--color-primary)";
+            e.currentTarget.style.color = "#f97316";
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.backgroundColor = "#f9fafb";

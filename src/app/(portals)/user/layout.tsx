@@ -77,7 +77,8 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
         style={{
           maxWidth: "1400px",
           margin: "0 auto",
-          padding: "1.5rem 2rem",
+          padding: "clamp(1rem, 4vw, 2.5rem) clamp(1rem, 5vw, 2.5rem)",
+          boxSizing: "border-box",
         }}
       >
         {children}

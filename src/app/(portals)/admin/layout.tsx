@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAppSelector, useAppDispatch } from "@/store/hooks"
 import { selectAuth, hydrateAuthThunk } from "@/store/slices/authSlice"
+import { motion, AnimatePresence } from "framer-motion"
 import AdminSidebar from "@/components/shared/navigation/AdminSidebar"
 import AdminTopNav from "@/components/shared/navigation/AdminTopNav"
 
@@ -10,8 +11,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter()
   const dispatch = useAppDispatch()
   const [checked, setChecked] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(false)
   const { user, isAuthenticated, isLoading } = useAppSelector(selectAuth)
   const role = user?.role
+
+  useEffect(() => {
+    const check = () => {
+      setIsDesktop(window.innerWidth >= 1024)
+      if (window.innerWidth >= 1024) setSidebarOpen(false)
+    }
+    check()
+    window.addEventListener("resize", check)
+    return () => window.removeEventListener("resize", check)
+  }, [])
 
   useEffect(() => {
     const initAuth = async () => {
@@ -78,33 +91,66 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       style={{
         display: "flex",
         minHeight: "100vh",
-        backgroundColor: "var(--accent-bg)",
-        fontFamily: "'Inter', system-ui, -apple-system, sans-serif",
+        backgroundColor: "var(--color-50)",
+        fontFamily: "'Inter', sans-serif",
+        position: "relative",
       }}
     >
-      {/* Sidebar - fixed left */}
-      <AdminSidebar />
+      {/* 1. OVERLAY (for mobile/tablet drawer) */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSidebarOpen(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              backgroundColor: "rgba(0,0,0,0.3)",
+              zIndex: 40,
+              backdropFilter: "blur(2px)",
+            }}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Main Content Area */}
+      {/* 2. SIDEBAR (slides on mobile/tablet, fixed on desktop) */}
+      <AnimatePresence>
+        {(sidebarOpen || isDesktop) && (
+          <AdminSidebar 
+            isMobile={!isDesktop} 
+            onClose={() => setSidebarOpen(false)} 
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 3. MAIN CONTENT AREA */}
       <div
         style={{
-          marginLeft: "15.0rem",
           flex: 1,
           display: "flex",
           flexDirection: "column",
           minHeight: "100vh",
+          width: "100%",
+          overflowX: "hidden",
         }}
       >
-        {/* Top Navbar - fixed top */}
-        <AdminTopNav pageTitle="Dashboard" />
+        <AdminTopNav 
+          pageTitle="Admin Console" 
+          onMenuClick={() => setSidebarOpen(true)}
+          sidebarOpen={sidebarOpen}
+        />
 
-        {/* Content Section */}
         <main
           style={{
-            marginTop: "4.0rem",
-            padding: "2.0rem",
+            padding: "clamp(1rem, 4vw, 2.5rem)",
             flex: 1,
-            backgroundColor: "var(--accent-bg)",
+            backgroundColor: "transparent",
+            width: "100%",
+            maxWidth: "1600px",
+            margin: "0 auto",
+            boxSizing: "border-box",
           }}
         >
           {children}

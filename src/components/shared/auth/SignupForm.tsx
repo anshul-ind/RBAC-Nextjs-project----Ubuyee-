@@ -69,13 +69,14 @@ export function SignupForm({ role, portalOrigin }: SignupFormProps) {
     width: "100%",
     background: "var(--color-50)",
     border: "1.5px solid var(--color-200)",
-    borderRadius: "var(--radius-xl)",
+    borderRadius: "var(--radius-lg)",
     padding: "0.75rem 1rem",
-    fontSize: "0.9rem",
+    fontSize: "16px", // iOS zoom fix
     color: "var(--color-900)",
     outline: "none",
     transition: "all 0.2s ease",
     boxSizing: "border-box",
+    marginBottom: "0.875rem",
   };
 
   const labelStyle: React.CSSProperties = {
@@ -201,6 +202,7 @@ export function SignupForm({ role, portalOrigin }: SignupFormProps) {
           opacity: isLoading ? 0.75 : 1,
           transition: "all 0.2s ease",
           letterSpacing: "0.01em",
+          height: "3.25rem",
         } as React.CSSProperties}
         onMouseEnter={(e) => {
           if (!isLoading) {

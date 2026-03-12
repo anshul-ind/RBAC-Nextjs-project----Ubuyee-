@@ -11,9 +11,15 @@ import {
   BarChart2,
   Settings,
   HelpCircle,
+  X,
   LucideIcon
 } from "lucide-react";
 import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
+
+interface AdminSidebarProps {
+  onClose?: () => void;
+  isMobile?: boolean;
+}
 
 interface NavItemProps {
   label: string;
@@ -63,50 +69,77 @@ const NavItem = ({ label, icon: Icon, path, isActive, onClick }: NavItemProps) =
   );
 };
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ onClose, isMobile }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
 
   const handleNav = (path: string) => {
     router.push(path);
+    if (isMobile && onClose) onClose();
   };
 
   return (
     <motion.aside
-      initial={{ x: "-100%", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
+      initial={isMobile ? { x: "-100%" } : undefined}
+      animate={{ x: 0 }}
+      exit={isMobile ? { x: "-100%" } : undefined}
       transition={{
         type: "spring",
-        stiffness: 260,
-        damping: 24,
-        duration: 0.4
+        stiffness: 300,
+        damping: 30,
       }}
       style={{
-        width: "15.0rem",
+        width: "var(--sidebar-width, 15rem)",
         height: "100vh",
-        position: "fixed",
+        position: isMobile ? "fixed" : "sticky",
         top: 0,
         left: 0,
-        zIndex: 40,
-        backgroundColor: "var(--neutral-bg)",
-        borderRight: "1px solid var(--neutral-border)",
+        zIndex: 50,
+        backgroundColor: "var(--color-0)",
+        borderRight: "1px solid var(--color-100)",
         display: "flex",
         flexDirection: "column",
         overflowY: "auto",
         overflowX: "hidden",
+        boxShadow: isMobile ? "4px 0 24px rgba(0,0,0,0.08)" : "none",
       }}
     >
       {/* Sidebar Top: Logo */}
       <div
         style={{
-          padding: "1.5rem 1.25rem",
-          borderBottom: "1px solid var(--neutral-border)",
-          height: "4rem",
+          padding: "0 1.25rem",
+          borderBottom: "1px solid var(--color-100)",
+          height: "var(--nav-height)",
           display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
         }}
       >
-        <UbuyeeLogo size="sm" />
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <UbuyeeLogo size="sm" />
+          <span style={{ fontSize: "0.9rem", fontWeight: 800, color: "var(--color-900)" }}>
+            Admin<span style={{ color: "var(--color-primary)" }}>Pro</span>
+          </span>
+        </div>
+        {isMobile && (
+          <button
+            onClick={onClose}
+            style={{
+              width: "2rem",
+              height: "2rem",
+              borderRadius: "50%",
+              backgroundColor: "var(--color-50)",
+              border: "1px solid var(--color-100)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "var(--color-700)",
+              cursor: "pointer",
+            }}
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
 
       {/* Sidebar Navigation */}
