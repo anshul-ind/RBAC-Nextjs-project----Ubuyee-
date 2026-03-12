@@ -1,50 +1,79 @@
-"use client";
+"use client"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useAppSelector } from "@/store/hooks"
+import { selectAuth } from "@/store/slices/authSlice"
+import TopNav from "@/components/shared/navigation/TopNav"
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAppSelector } from "@/store/hooks";
-import TopNav from "@/components/shared/navigation/TopNav";
-
-export default function UserPortalLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, user } = useAppSelector((state) => state.auth);
-  const router = useRouter();
+export default function UserLayout({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+  const { user, isAuthenticated, isLoading } = useAppSelector(selectAuth)
+  const role = user?.role;
 
   useEffect(() => {
-    // If we are already on the login or signup page, don't trigger a redirect
-    const path = window.location.pathname;
-    if (path.endsWith("/login") || path.endsWith("/signup")) {
-      return;
+    // Wait until loading is done
+    if (isLoading) return
+
+    // If not authenticated redirect to login
+    if (!isAuthenticated) {
+      router.replace("/user/login")
+      return
     }
 
-    // If Redux is done loading and we still don't have an authenticated string
-    if (!isLoading && !isAuthenticated) {
-      router.push("/user/login");
+    // If wrong role redirect to correct portal
+    const allowed = ["user", "vendor", "admin"]
+    if (!allowed.includes(role ?? "")) {
+      router.replace("/login")
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isAuthenticated, isLoading, role, router])
 
-  const isAuthPage = typeof window !== "undefined" && (window.location.pathname.endsWith("/login") || window.location.pathname.endsWith("/signup"));
-
-  if (isLoading && !isAuthPage) {
+  // CRITICAL: Show loading spinner while hydrating
+  // This prevents the flash of broken UI
+  if (isLoading) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", background: "#ffffff", color: "#f97316" }}>
-        Loading user portal...
+      <div style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#ffffff"
+      }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{
+            width: "2.5rem",
+            height: "2.5rem",
+            border: "3px solid #f3f4f6",
+            borderTop: "3px solid #f97316",
+            borderRadius: "50%",
+            animation: "spin 0.8s linear infinite",
+            margin: "0 auto 1rem"
+          }} />
+          <p style={{
+            fontSize: "0.875rem",
+            color: "#6b7280"
+          }}>
+            Loading your dashboard...
+          </p>
+        </div>
       </div>
-    );
+    )
   }
 
-  // Also catch edge case where a non-user sneaks past middleware (shouldn't happen, but good to check)
-  if (!isAuthPage && user && user.role !== "user" && user.role !== "admin") {
-    return null; // Will be kicked by middleware anyway
-  }
-
-  if (!isAuthPage && !isAuthenticated) return null;
+  // Don't render children until authenticated
+  if (!isAuthenticated) return null
 
   return (
-    <div style={{ backgroundColor: "#fafafa", minHeight: "100vh" }}>
-      {!isAuthPage && <TopNav userName={user?.name || user?.email || "User"} role={user?.role as any} />}
-      <div style={{ padding: "0 24px 24px 24px" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#fafafa" }}>
+      <TopNav />
+      <main
+        style={{
+          maxWidth: "1400px",
+          margin: "0 auto",
+          padding: "1.5rem 2rem",
+        }}
+      >
         {children}
-      </div>
+      </main>
     </div>
-  );
+  )
 }

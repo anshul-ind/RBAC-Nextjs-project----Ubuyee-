@@ -1,40 +1,149 @@
 @import "tailwindcss";
 
 :root {
-  --primary-text:     #f97316;
-  --primary-bg:       #fff7ed;
-  --primary-border:   #fed7aa;
-  --primary-hover:    #ea6c0a;
+
+  /* ── PRIMARY (Orange) ── */
+  --color-primary:        #f97316;
+  --color-primary-hover:  #ea6c0a;
+  --color-primary-light:  #fff7ed;
+  --color-primary-border: #fed7aa;
+  --color-primary-muted:  #ffedd5;
+
+  /* ── NEUTRAL SCALE ── */
+  --color-900: #111827;
+  --color-800: #1f2937;
+  --color-700: #374151;
+  --color-600: #4b5563;
+  --color-500: #6b7280;
+  --color-400: #9ca3af;
+  --color-300: #d1d5db;
+  --color-200: #e5e7eb;
+  --color-100: #f3f4f6;
+  --color-50:  #f9fafb;
+  --color-0:   #ffffff;
+
+  /* ── NAVY (Logo + Dark text) ── */
+  --color-navy:       #1e293b;
+  --color-navy-light: #334155;
+  --color-navy-muted: #64748b;
+
+  /* ── STATUS COLORS ── */
+  --color-success:        #22c55e;
+  --color-success-light:  #f0fdf4;
+  --color-success-border: #bbf7d0;
+  --color-success-text:   #16a34a;
+
+  --color-warning:        #f59e0b;
+  --color-warning-light:  #fffbeb;
+  --color-warning-border: #fde68a;
+  --color-warning-text:   #d97706;
+
+  --color-error:          #ef4444;
+  --color-error-light:    #fef2f2;
+  --color-error-border:   #fecaca;
+  --color-error-text:     #dc2626;
+
+  --color-info:           #3b82f6;
+  --color-info-light:     #eff6ff;
+  --color-info-border:    #bfdbfe;
+  --color-info-text:      #2563eb;
+
+  /* ── BORDER RADIUS ── */
+  --radius-xs:   4px;
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   10px;
+  --radius-xl:   12px;
+  --radius-2xl:  16px;
+  --radius-3xl:  20px;
+  --radius-4xl:  24px;
+  --radius-full: 9999px;
+
+  /* ── SPACING ── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  /* ── SEMANTIC SPACING ── */
+  --nav-height:     4rem;
+  --sidebar-width:  15rem;
+  --page-max-width: 1400px;
+  --page-padding:   2.5rem;
+  --card-padding:   1.5rem;
+  --card-gap:       1.25rem;
+  --section-gap:    2.5rem;
+
+  /* ── TYPOGRAPHY ── */
+  --text-xs:   0.65rem;
+  --text-sm:   0.75rem;
+  --text-base: 0.875rem;
+  --text-md:   1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.25rem;
+  --text-2xl:  1.5rem;
+  --text-3xl:  1.875rem;
+  --text-4xl:  2.25rem;
+  --text-5xl:  3rem;
+  --text-6xl:  3.5rem;
+
+  /* ── FONT WEIGHT ── */
+  --font-normal:    400;
+  --font-medium:    500;
+  --font-semibold:  600;
+  --font-bold:      700;
+  --font-extrabold: 800;
+  --font-black:     900;
+
+  /* ── SHADOWS ── */
+  --shadow-sm:     0 1px 4px rgba(0,0,0,0.06);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.10);
+  --shadow-orange: 0 8px 24px rgba(249,115,22,0.25);
+  --shadow-card:   0 2px 12px rgba(0,0,0,0.04);
+
+  /* ── LEGACY ALIASES (backward compat) ── */
+  --primary-text:     var(--color-primary);
+  --primary-bg:       var(--color-primary-light);
+  --primary-border:   var(--color-primary-border);
+  --primary-hover:    var(--color-primary-hover);
 
   --secondary-text:   #1e3a5f;
-  --secondary-bg:     #eff6ff;
-  --secondary-border: #bfdbfe;
+  --secondary-bg:     var(--color-info-light);
+  --secondary-border: var(--color-info-border);
 
-  --accent-text:      #111827;
-  --accent-bg:        #f9fafb;
-  --accent-border:    #e5e7eb;
+  --accent-text:      var(--color-900);
+  --accent-bg:        var(--color-50);
+  --accent-border:    var(--color-200);
 
-  --neutral-text:     #374151;
-  --neutral-bg:       #ffffff;
-  --neutral-border:   #f3f4f6;
-  --neutral-muted:    #6b7280;
+  --neutral-text:     var(--color-700);
+  --neutral-bg:       var(--color-0);
+  --neutral-border:   var(--color-100);
+  --neutral-muted:    var(--color-500);
 
-  --info-text:        #0ea5e9;
-  --info-bg:          #f0f9ff;
-  --info-border:      #bae6fd;
+  --info-text:        var(--color-info-text);
+  --info-bg:          var(--color-info-light);
+  --info-border:      var(--color-info-border);
 
-  --warning-text:     #f59e0b;
-  --warning-bg:       #fffbeb;
-  --warning-border:   #fde68a;
+  --warning-text:     var(--color-warning-text);
+  --warning-bg:       var(--color-warning-light);
+  --warning-border:   var(--color-warning-border);
 
-  --error-text:       #ef4444;
-  --error-bg:         #fef2f2;
-  --error-border:     #fecaca;
+  --error-text:       var(--color-error-text);
+  --error-bg:         var(--color-error-light);
+  --error-border:     var(--color-error-border);
 
-  --success-text:     #22c55e;
-  --success-bg:       #f0fdf4;
-  --success-border:   #bbf7d0;
+  --success-text:     var(--color-success-text);
+  --success-bg:       var(--color-success-light);
+  --success-border:   var(--color-success-border);
 }
+
 
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
@@ -65,5 +174,9 @@
 
 .marquee-track:hover {
   animation-play-state: paused;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 

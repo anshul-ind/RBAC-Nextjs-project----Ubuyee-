@@ -4,6 +4,7 @@ import Link from "next/link";
 import { LoginForm } from "@/components/shared/auth/LoginForm";
 import { FiShield } from "react-icons/fi";
 import { motion } from "framer-motion";
+import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
 
 /**
  * Admin Login Page — Redesigned for White Theme
@@ -14,7 +15,7 @@ export default function AdminLoginPage() {
     <main
       style={{
         minHeight: "100vh",
-        background: "#ffffff",
+        background: "var(--color-0)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -57,7 +58,7 @@ export default function AdminLoginPage() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         style={{
-          background: "#ffffff",
+          background: "var(--color-0)",
           border: "1px solid #f3f4f6",
           borderRadius: "20px",
           padding: "2.5rem 2rem",
@@ -89,52 +90,50 @@ export default function AdminLoginPage() {
               width: "3.5rem",
               height: "3.5rem",
               borderRadius: "50%",
-              background: "#fff7ed",
-              border: "2px solid #fed7aa",
+              background: "#fef2f2",
+              border: "2px solid #fecaca",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 1.25rem",
-              color: "#f97316",
+              color: "#dc2626",
             }}
           >
             <FiShield size="1.5rem" />
           </div>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#111827", margin: "0 0 0.375rem" }}>
-            Admin Sign In
+          <div style={{ marginBottom: "0.75rem" }}>
+            <UbuyeeLogo size="md" />
+          </div>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--color-900)", margin: "0 0 0.375rem" }}>
+            Admin Portal
           </h1>
-          <p style={{ fontSize: "0.875rem", color: "#6b7280", margin: "0 0 2rem" }}>
-            Secure access — authorized only
+          <p style={{ fontSize: "0.875rem", color: "var(--color-500)", margin: "0 0 2rem" }}>
+            Authorized personnel only
           </p>
         </div>
 
         {/* LoginForm wired to Admin */}
-        <LoginForm role="admin" />
+        <LoginForm role="admin" portalOrigin="admin" submitButtonBackground="#1e293b" submitButtonHoverBackground="#334155" submitButtonText="Sign in as Admin &rarr;" />
 
-        {/* Footer Links */}
-        <div style={{ marginTop: "1rem" }}>
-          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "#6b7280", margin: 0 }}>
-            No account?{" "}
-            <Link
-              href="/admin/signup"
-              style={{ color: "#f97316", fontWeight: 600, textDecoration: "none" }}
-              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-            >
-              Sign up
-            </Link>
-          </p>
-          <div style={{ width: "100%", height: "1px", background: "#f3f4f6", margin: "0.875rem 0" }} />
-          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "#6b7280", margin: 0 }}>
-            Not a user?{" "}
-            <Link
-              href="/login"
-              style={{ color: "#f97316", fontWeight: 600, textDecoration: "none" }}
-              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
-            >
-              Choose a different role
-            </Link>
+        {/* Security Notice */}
+        <div
+          style={{
+            marginTop: "1rem",
+            padding: "0.75rem",
+            background: "var(--color-50)",
+            borderRadius: "8px",
+            border: "1px solid var(--color-100)",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "0.72rem",
+              color: "var(--color-400)",
+              textAlign: "center",
+              margin: 0,
+            }}
+          >
+            This is a restricted area. Unauthorized access attempts are monitored and logged.
           </p>
         </div>
       </motion.div>

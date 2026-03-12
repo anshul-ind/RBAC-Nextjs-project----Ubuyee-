@@ -1,85 +1,95 @@
-"use client";
-
-import React from "react";
+"use client"
 
 interface UbuyeeLogoProps {
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg"
+  onClick?: () => void
 }
 
-/**
- * Task 1: Ubuyee Geometric SVG Logo
- * Rules:
- * - Mixed weight letterforms: U (bold/large), b, u, y (medium), e, e (rounded/open).
- * - Rounded stroke ends.
- * - Special treatment for U: larger font and a centered orange dot above.
- */
-export default function UbuyeeLogo({ size = "md" }: UbuyeeLogoProps) {
-  // Scaling logic
-  const scales = {
-    sm: 0.7,
-    md: 1.0,
-    lg: 1.3,
-  };
-  const scale = scales[size] || 1.0;
+export default function UbuyeeLogo({
+  size = "md",
+  onClick,
+}: UbuyeeLogoProps) {
+  const scale = size === "sm" ? 0.55
+              : size === "lg" ? 1.1
+              : 0.78
 
-  // Colors
-  const orange = "#f97316";
+  const w = Math.round(220 * scale)
+  const h = Math.round(80 * scale)
 
   return (
-    <div 
-      style={{ 
-        transform: `scale(${scale})`, 
-        transformOrigin: "left center", 
+    <div
+      onClick={onClick}
+      style={{
         display: "inline-flex",
-        alignItems: "center"
+        alignItems: "center",
+        cursor: onClick ? "pointer" : "default",
+        userSelect: "none",
       }}
     >
       <svg
-        width="160"
-        height="48"
-        viewBox="0 0 160 48"
+        width={w}
+        height={h}
+        viewBox="0 0 220 80"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ overflow: "visible" }}
       >
-        {/* The word "Ubuyee" using SVG text elements */}
+        {/* Orange rounded square — cart basket */}
+        <rect
+          x="4" y="18"
+          width="44" height="44"
+          rx="8"
+          fill="#f97316"
+        />
+
+        {/* White U inside orange square */}
+        <path
+          d="M16 26 L16 46 Q16 54 24 54 L32 54 Q40 54 40 46 L40 26"
+          stroke="white"
+          strokeWidth="4.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+
+        {/* Cart handle — navy diagonal line */}
+        <line
+          x1="44" y1="22"
+          x2="62" y2="6"
+          stroke="#1e293b"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+
+        {/* Left wheel dot */}
+        <circle cx="16" cy="70" r="4" fill="#1e293b" />
+
+        {/* Right wheel dot */}
+        <circle cx="36" cy="70" r="4" fill="#1e293b" />
+
+        {/* "buy" in dark navy */}
         <text
-          x="0"
-          y="38"
-          fill={orange}
-          style={{
-            fontFamily: '"Syne", "Space Grotesk", sans-serif',
-            letterSpacing: "-1.5px",
-          }}
+          x="58" y="58"
+          fontFamily="'Inter','Helvetica Neue',Arial,sans-serif"
+          fontWeight="800"
+          fontSize="46"
+          fill="#1e293b"
+          letterSpacing="-1"
         >
-          {/* U (Bold, Large) */}
-          <tspan
-            style={{ fontSize: "38px", fontWeight: 800 }}
-          >
-            U
-          </tspan>
-          
-          {/* buy (Medium weight) */}
-          <tspan
-            dx="2"
-            style={{ fontSize: "32px", fontWeight: 600 }}
-          >
-            buy
-          </tspan>
-          
-          {/* ee (Open, Rounded) */}
-          <tspan
-            dx="2"
-            style={{ fontSize: "32px", fontWeight: 400 }}
-          >
-            ee
-          </tspan>
+          buyee
         </text>
 
-        {/* Geometric detail: Dot above the U */}
-        {/* Centered above the U. U width is roughly 24px at 38px font size. */}
-        <circle cx="13" cy="4" r="5" fill={orange} />
+        {/* "ee" in orange */}
+        <text
+          x="152" y="58"
+          fontFamily="'Inter','Helvetica Neue',Arial,sans-serif"
+          fontWeight="800"
+          fontSize="46"
+          fill="#f97316"
+          letterSpacing="-1"
+        >
+          ee
+        </text>
       </svg>
     </div>
-  );
+  )
 }

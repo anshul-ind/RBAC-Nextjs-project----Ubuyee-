@@ -3,19 +3,20 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Menu, X, Bell, Search, LogOut } from "lucide-react";
-import { useAppDispatch } from "@/store/hooks";
-import { logoutThunk } from "@/store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { logoutThunk, selectAuth } from "@/store/slices/authSlice";
 import { useRouter } from "next/navigation";
 
 interface VendorTopNavProps {
   onMenuClick: () => void;
   sidebarOpen: boolean;
-  userName?: string | null;
 }
 
-export default function VendorTopNav({ onMenuClick, sidebarOpen, userName }: VendorTopNavProps) {
+export default function VendorTopNav({ onMenuClick, sidebarOpen }: VendorTopNavProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { user } = useAppSelector(selectAuth);
+  const userName = user?.name;
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -38,47 +39,8 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen, userName }: Ven
         boxShadow: "0 1px 0 rgba(0,0,0,0.06)",
       }}
     >
-      {/* Left Side: Hamburger & Title */}
+      {/* Left Side: Portal Title */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={onMenuClick}
-          style={{
-            width: "2.25rem",
-            height: "2.25rem",
-            borderRadius: "10px",
-            border: "1px solid var(--neutral-border)",
-            backgroundColor: "var(--accent-bg)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "#374151",
-            marginRight: "1rem",
-            transition: "all 0.2s ease",
-            overflow: "hidden"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--primary-bg)";
-            e.currentTarget.style.color = "var(--primary-text)";
-            e.currentTarget.style.borderColor = "var(--primary-border)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--accent-bg)";
-            e.currentTarget.style.color = "#374151";
-            e.currentTarget.style.borderColor = "var(--neutral-border)";
-          }}
-        >
-          <motion.div
-            animate={{ rotate: sidebarOpen ? 90 : 0 }}
-            transition={{ duration: 0.2 }}
-            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-          >
-            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
-          </motion.div>
-        </motion.button>
-
         <h1 style={{ fontSize: "1.125rem", fontWeight: 700, color: "#111827", margin: 0 }}>
           Vendor Dashboard
         </h1>
@@ -161,11 +123,11 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen, userName }: Ven
               fontWeight: 700,
             }}
           >
-            {userName ? userName[0].toUpperCase() : "V"}
+            {userName ? userName[0].toUpperCase() : ""}
           </div>
           <div style={{ display: "none", flexDirection: "column", gap: "1px" }} className="md:flex">
             <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "#111827" }}>
-              {userName || "Vendor"}
+              {userName ?? ""}
             </span>
             <span
               style={{
@@ -207,6 +169,47 @@ export default function VendorTopNav({ onMenuClick, sidebarOpen, userName }: Ven
           <LogOut size={14} />
           Logout
         </button>
+
+        {/* Hamburger Menu - Moved to far right */}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={onMenuClick}
+          style={{
+            width: "2.25rem",
+            height: "2.25rem",
+            borderRadius: "10px",
+            border: "1px solid #f3f4f6",
+            backgroundColor: "#f9fafb",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            color: "#374151",
+            marginLeft: "0.5rem",
+            flexShrink: 0,
+            transition: "all 0.2s ease",
+            overflow: "hidden"
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#fff7ed";
+            e.currentTarget.style.borderColor = "#fed7aa";
+            e.currentTarget.style.color = "var(--color-primary)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#f9fafb";
+            e.currentTarget.style.borderColor = "#f3f4f6";
+            e.currentTarget.style.color = "#374151";
+          }}
+        >
+          <motion.div
+            animate={{ rotate: sidebarOpen ? 90 : 0 }}
+            transition={{ duration: 0.2 }}
+            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+          >
+            {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+          </motion.div>
+        </motion.button>
       </div>
     </nav>
   );

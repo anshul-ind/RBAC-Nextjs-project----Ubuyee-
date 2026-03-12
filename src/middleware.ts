@@ -17,77 +17,78 @@ import { verifyToken } from "./lib/jwt";
  * If the user has a different role than required for the route, they are
  * redirected to their own portal dashboard (e.g. vendor → `/vendor/dashboard`).
  */
+const ROUTE_PERMISSIONS: Record<string, string[]> = {
+  "/user":   ["user", "vendor", "admin"],
+  "/vendor": ["user", "vendor", "admin"],
+  "/admin":  ["admin"],
+}
+
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const pathname = request.nextUrl.pathname
 
-  // Only protect the three role-based portal prefixes.
-  const isUserRoute = pathname.startsWith("/user");
-  const isVendorRoute = pathname.startsWith("/vendor");
-  const isAdminRoute = pathname.startsWith("/admin");
-
-  if (!isUserRoute && !isVendorRoute && !isAdminRoute) {
-    return NextResponse.next();
+  // Block /admin/signup permanently
+  if (pathname === "/admin/signup") {
+    return NextResponse.redirect(
+      new URL("/", request.url)
+    )
   }
 
-  console.log(`[Middleware] Path: ${pathname}`);
+  // Determine which portal this route belongs to
+  let requiredRoles: string[] | null = null
 
+  if (pathname.startsWith("/admin")) {
+    requiredRoles = ROUTE_PERMISSIONS["/admin"]
+  } else if (pathname.startsWith("/vendor")) {
+    requiredRoles = ROUTE_PERMISSIONS["/vendor"]
+  } else if (pathname.startsWith("/user")) {
+    requiredRoles = ROUTE_PERMISSIONS["/user"]
+  }
 
-  const token = request.cookies.get("token")?.value;
+  // If not a protected route, allow through
+  if (!requiredRoles) {
+    return NextResponse.next()
+  }
 
-  const buildRedirect = (path: string) => {
-    const url = new URL(path, request.url);
-    return NextResponse.redirect(url);
-  };
+  // Get and verify token from cookie
+  const token = request.cookies.get("token")?.value
 
-  // No token: send to role-specific login.
   if (!token) {
-    console.log(`[Middleware] No token found for ${pathname}`);
     // Robust check for auth pages to prevent redirect loops
     const isAuthPage = pathname.endsWith("/login") || pathname.endsWith("/signup") || 
                        pathname.includes("/login/") || pathname.includes("/signup/");
-
+    
     if (isAuthPage) {
-      console.log(`[Middleware] Allowing unauthenticated access to auth page: ${pathname}`);
       return NextResponse.next();
     }
 
-    if (isUserRoute) return buildRedirect("/user/login");
-    if (isVendorRoute) return buildRedirect("/vendor/login");
-    if (isAdminRoute) return buildRedirect("/admin/login");
-    return buildRedirect("/login");
+    return NextResponse.redirect(
+      new URL("/login", request.url)
+    )
   }
 
   try {
-    const payload = await verifyToken(token);
-    console.log(`[Middleware] Token verified. Role: ${payload.role}`);
+    const payload = await verifyToken(token)
 
-    // Determine required role based on route prefix.
-    const requiredRole = isUserRoute ? "user" : isVendorRoute ? "vendor" : "admin";
+    if (!payload || !payload.role) {
+      return NextResponse.redirect(
+        new URL("/login", request.url)
+      )
+    }
 
-    // If the user's role does not match what the portal requires...
-    if (payload.role !== requiredRole) {
-      // OVERRIDE: Admins can view all portals. If they are an admin, let them through.
-      if (payload.role === "admin") {
-        return NextResponse.next();
-      }
+    const userRole = payload.role as string
 
-      // Check if they are on an auth page (login/signup)
-      // If so, let them see it so they can sign in with a different account/role if they want.
-      const isAuthPage = pathname.endsWith("/login") || pathname.endsWith("/signup") || 
-                         pathname.includes("/login/") || pathname.includes("/signup/");
+    // Check if user's role is allowed for this route
+    if (!requiredRoles.includes(userRole)) {
+      // Redirect to their own dashboard if wrong portal
+      const fallback = userRole === "admin"
+        ? "/admin/dashboard"
+        : userRole === "vendor"
+        ? "/vendor/dashboard"
+        : "/user/dashboard"
 
-      if (isAuthPage) {
-        return NextResponse.next();
-      }
-
-      // Otherwise, they are logged in but have the wrong role.
-      // Redirect them to their own portal dashboard.
-      if (payload.role === "user") {
-        return buildRedirect("/user/dashboard");
-      }
-      if (payload.role === "vendor") {
-        return buildRedirect("/vendor/dashboard");
-      }
+      return NextResponse.redirect(
+        new URL(fallback, request.url)
+      )
     }
 
     // Prevent logged-in users from seeing the login/signup pages again
@@ -95,23 +96,19 @@ export async function middleware(request: NextRequest) {
                        pathname.includes("/login/") || pathname.includes("/signup/");
 
     if (isAuthPage) {
-      return buildRedirect(`/${payload.role}/dashboard`);
+      const fallback = userRole === "admin"
+        ? "/admin/dashboard"
+        : userRole === "vendor"
+        ? "/vendor/dashboard"
+        : "/user/dashboard"
+      return NextResponse.redirect(new URL(fallback, request.url));
     }
 
-    return NextResponse.next();
+    return NextResponse.next()
   } catch (error) {
-    console.error(`[Middleware] Token verification failed for ${pathname}:`, error);
-    const isAuthPage = pathname.endsWith("/login") || pathname.endsWith("/signup") || 
-                       pathname.includes("/login/") || pathname.includes("/signup/");
-
-    if (isAuthPage) {
-      return NextResponse.next();
-    }
-
-    if (isUserRoute) return buildRedirect("/user/login");
-    if (isVendorRoute) return buildRedirect("/vendor/login");
-    if (isAdminRoute) return buildRedirect("/admin/login");
-    return buildRedirect("/login");
+    return NextResponse.redirect(
+      new URL("/login", request.url)
+    )
   }
 }
 

@@ -11,41 +11,47 @@ export async function GET(request: NextRequest) {
     const token = request.cookies.get("token")?.value;
 
     if (!token) {
-      return NextResponse.json({ ok: false, user: null }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "No token" },
+        { status: 401 }
+      );
     }
 
     let payload;
     try {
-     payload = await verifyToken(token);
+      payload = await verifyToken(token);
     } catch {
-      return NextResponse.json({ ok: false, user: null }, { status: 401 });
+      return NextResponse.json(
+        { success: false, error: "Invalid token" },
+        { status: 401 }
+      );
     }
 
     await connectToDatabase();
 
-    const user = await User.findById(payload.sub).select("_id email role name");
+    const user = await User.findById(payload.sub).select("-password").lean();
 
     if (!user) {
-      return NextResponse.json({ ok: false, user: null }, { status: 404 });
+      return NextResponse.json(
+        { success: false, error: "User not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json(
-      {
-        ok: true,
-        user: {
-          id: user._id,
-          email: user.email,
-          role: user.role,
-          name: user.name,
-        },
+    return NextResponse.json({
+      success: true,
+      data: {
+        id: (user._id as any).toString(),
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
-      { status: 200 },
-    );
+    });
   } catch (error) {
     console.error("me error:", error);
     return NextResponse.json(
-      { ok: false, user: null, error: "Internal server error." },
-      { status: 500 },
+      { success: false, error: "Server error" },
+      { status: 500 }
     );
   }
 }

@@ -1,19 +1,20 @@
 "use client";
 
 import React from "react";
-import { useAppDispatch } from "@/store/hooks";
-import { logoutThunk } from "@/store/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { logoutThunk, selectAuth } from "@/store/slices/authSlice";
 import { useRouter } from "next/navigation";
 import { Search, Bell, ChevronDown } from "lucide-react";
 
 interface AdminTopNavProps {
   pageTitle: string;
-  userName: string;
 }
 
-export default function AdminTopNav({ pageTitle, userName }: AdminTopNavProps) {
+export default function AdminTopNav({ pageTitle }: AdminTopNavProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const { user } = useAppSelector(selectAuth);
+  const userName = user?.name;
 
   const handleLogout = async () => {
     await dispatch(logoutThunk());
@@ -142,11 +143,11 @@ export default function AdminTopNav({ pageTitle, userName }: AdminTopNavProps) {
               color: "var(--primary-text)",
             }}
           >
-            {userName.charAt(0).toUpperCase()}
+            {userName ? userName.charAt(0).toUpperCase() : ""}
           </div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <span style={{ fontSize: "0.875rem", fontWeight: 600, color: "var(--accent-text)" }}>
-              {userName}
+              {userName ?? ""}
             </span>
             <span style={{ fontSize: "0.70rem", color: "var(--neutral-muted)" }}>Admin</span>
           </div>

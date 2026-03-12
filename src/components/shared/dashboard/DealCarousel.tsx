@@ -122,7 +122,7 @@ export default function DealCarousel() {
           marginBottom: "16px",
         }}
       >
-        <h2 style={{ fontSize: "18px", fontWeight: 700, color: "#111827", margin: 0 }}>
+        <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-900)", margin: 0 }}>
           Today's Deals
         </h2>
         <span
@@ -146,8 +146,8 @@ export default function DealCarousel() {
           position: "relative",
           overflow: "hidden",
           borderRadius: "20px",
-          background: "#ffffff",
-          border: "1px solid #f0f0f0",
+          background: "var(--color-0)",
+          border: "1px solid var(--color-100)",
           boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
           height: "420px",
         }}
@@ -162,11 +162,11 @@ export default function DealCarousel() {
             right: "20px",
             fontSize: "12px",
             fontFamily: "monospace",
-            color: "#6b7280",
+            color: "var(--color-500)",
             background: "rgba(255,255,255,0.9)",
             padding: "4px 12px",
-            borderRadius: "999px",
-            border: "1px solid #f0f0f0",
+            borderRadius: "var(--radius-full)",
+            border: "1px solid var(--color-100)",
             zIndex: 20,
           }}
         >
@@ -282,7 +282,7 @@ export default function DealCarousel() {
                   display: "flex", 
                   flexDirection: "column", 
                   justifyContent: "center",
-                  background: "#ffffff",
+                  background: "var(--color-0)",
                   height: "100%",
                   overflow: "hidden",
                   boxSizing: "border-box"
@@ -294,10 +294,10 @@ export default function DealCarousel() {
                     fontWeight: 700,
                     letterSpacing: "0.15em",
                     textTransform: "uppercase",
-                    color: "#f97316",
-                    background: "#fff7ed",
+                    color: "var(--color-primary)",
+                    background: "var(--color-primary-light)",
                     padding: "6px 14px",
-                    borderRadius: "999px",
+                    borderRadius: "var(--radius-full)",
                     display: "inline-block",
                     width: "fit-content",
                     marginBottom: "20px",
@@ -310,19 +310,19 @@ export default function DealCarousel() {
                   style={{
                     fontSize: "42px",
                     fontWeight: 800,
-                    color: "#111827",
+                    color: "var(--color-900)",
                     lineHeight: 1.1,
                     margin: "0 0 16px 0",
                   }}
                 >
                   {slide.headline}{" "}
-                  <span style={{ color: "#f97316" }}>{slide.headlineOrange}</span>
+                  <span style={{ color: "var(--color-primary)" }}>{slide.headlineOrange}</span>
                 </h3>
 
                 <p
                   style={{
                     fontSize: "15px",
-                    color: "#6b7280",
+                    color: "var(--color-500)",
                     lineHeight: 1.65,
                     margin: "0 0 32px 0",
                     maxWidth: "340px",
@@ -333,12 +333,12 @@ export default function DealCarousel() {
 
                 <button
                   style={{
-                    background: "#111827",
+                    background: "var(--color-900)",
                     color: "white",
                     fontSize: "14px",
                     fontWeight: 700,
                     padding: "14px 28px",
-                    borderRadius: "999px",
+                    borderRadius: "var(--radius-full)",
                     border: "none",
                     cursor: "pointer",
                     display: "inline-flex",
@@ -347,8 +347,8 @@ export default function DealCarousel() {
                     width: "fit-content",
                     transition: "background 0.2s",
                   }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#f97316")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#111827")}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "var(--color-primary)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "var(--color-900)")}
                 >
                   {slide.button} <span style={{ fontSize: "18px" }}>→</span>
                 </button>
@@ -403,14 +403,14 @@ export default function DealCarousel() {
               style={{
                 width: logicalIndex === index ? "32px" : "8px",
                 height: "8px",
-                background: logicalIndex === index ? "#f97316" : "rgba(255,255,255,0.6)",
+                background: logicalIndex === index ? "var(--color-primary)" : "rgba(255,255,255,0.6)",
                 border: logicalIndex === index ? "none" : "1px solid rgba(0,0,0,0.15)",
-                borderRadius: "999px",
+                borderRadius: "var(--radius-full)",
                 transition: "all 0.3s ease",
                 cursor: "pointer",
               }}
               onMouseEnter={(e) => {
-                if (logicalIndex !== index) e.currentTarget.style.backgroundColor = "#fdba74";
+                if (logicalIndex !== index) e.currentTarget.style.backgroundColor = "var(--color-primary-border)";
               }}
               onMouseLeave={(e) => {
                 if (logicalIndex !== index) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.6)";

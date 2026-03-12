@@ -77,7 +77,7 @@ export default function SignupSelectorPage() {
           title="Vendor"
           description="Register your store and start selling"
           icon="🏪"
-          accentColor="#f97316" // Orange
+          accentColor="var(--color-primary)" // Orange
         />
 
         {/* Admin Card */}
@@ -98,7 +98,7 @@ export default function SignupSelectorPage() {
         style={{ marginTop: "3rem", color: "rgba(148,163,184,0.7)", fontSize: "0.9rem" }}
       >
         Already have an account?{" "}
-        <Link href="/login" style={{ color: "#f97316", textDecoration: "none", fontWeight: 600 }}>
+        <Link href="/login" style={{ color: "var(--color-primary)", textDecoration: "none", fontWeight: 600 }}>
           Sign in here
         </Link>
       </motion.div>

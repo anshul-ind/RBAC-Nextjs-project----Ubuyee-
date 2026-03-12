@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ReduxProvider } from "@/components/providers/ReduxProvider";
 import ToasterProvider from "@/components/providers/ToasterProvider";
+import { HydrateAuth } from "@/components/providers/HydrateAuth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
       >
         {/* Redux provider for role-based auth and dashboards */}
         <ReduxProvider>
+          <HydrateAuth />
           <ToasterProvider />
           {children}
         </ReduxProvider>

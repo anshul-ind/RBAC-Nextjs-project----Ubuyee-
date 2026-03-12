@@ -4,11 +4,15 @@ import { UserModel as User } from "@/lib/db/models/User";
 import { comparePassword } from "@/lib/auth/password";
 import { generateToken } from "@/lib/jwt";
 
+import mongoose from "mongoose";
+
 export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
+    console.log("LOGIN DB NAME:", mongoose.connection.name);
 
-    const { email, password, role: requestedRole } = await request.json();
+    const { email, password, portalOrigin } = await request.json();
+    console.log("DEBUG LOGIN ATTEMPT:", { email, portalOrigin });
 
     if (!email || !password) {
       return NextResponse.json(
@@ -25,10 +29,11 @@ export async function POST(request: NextRequest) {
     }
 
     const existingUser = await User.findOne({ email });
+    console.log("DEBUG USER FOUND:", existingUser ? { email: existingUser.email, role: existingUser.role } : "NULL");
 
     if (!existingUser) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "Debug: User not found" },
         { status: 401 }
       );
     }
@@ -44,17 +49,19 @@ export async function POST(request: NextRequest) {
 
     if (!isMatch) {
       return NextResponse.json(
-        { error: "Invalid credentials" },
+        { error: "Debug: Password mismatch" },
         { status: 401 }
       );
     }
 
-    // Role-Strict Enforcement: Check if the user is logging into the correct portal
-    // EXCEPTION: Admins are allowed to log in via any portal
-    if (requestedRole && existingUser.role !== requestedRole && existingUser.role !== "admin") {
+    // Portal Access Enforcement
+    const userRole = existingUser.role;
+
+    // RULE 1: User and Vendor roles CANNOT login from /admin/login
+    if (portalOrigin === "admin" && userRole !== "admin") {
       return NextResponse.json(
         { 
-          error: `Access Denied: Your account is registered as a ${existingUser.role}. Please use the ${existingUser.role} login portal.` 
+          error: "Access denied. Admin credentials required." 
         },
         { status: 403 }
       );
@@ -65,7 +72,12 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json(
       {
         message: "Login successful",
-        user: { id: existingUser._id, email: existingUser.email, role: existingUser.role },
+        user: { 
+          id: existingUser._id, 
+          email: existingUser.email, 
+          role: existingUser.role,
+          name: existingUser.name 
+        },
       },
       { status: 200 }
     );

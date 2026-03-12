@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
 
 /**
  * Redesigned Login Selector Page - /login
@@ -33,7 +34,7 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
         y: -10,
         scale: 1.06,
         boxShadow: "0 20px 40px rgba(249,115,22,0.18)",
-        borderColor: "#f97316",
+        borderColor: "var(--color-primary)",
       }}
       whileTap={{
         scale: 0.96,
@@ -43,7 +44,7 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
       style={{
         width: "200px",
         height: "200px",
-        backgroundColor: "#ffffff",
+        backgroundColor: "var(--color-0)",
         border: "1.5px solid #f3f4f6",
         borderRadius: "24px",
         display: "flex",
@@ -87,7 +88,7 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
           width: "5rem",
           height: "5rem",
           borderRadius: "20px",
-          backgroundColor: "#fff7ed",
+          backgroundColor: "var(--color-primary-light)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -103,7 +104,7 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
         style={{
           fontSize: "0.9rem",
           fontWeight: 700,
-          color: "#111827",
+          color: "var(--color-900)",
           letterSpacing: "0.01em",
           zIndex: 1,
         }}
@@ -122,7 +123,7 @@ const RoleCard = ({ title, icon, path, index }: RoleCardProps) => {
           width: "6px",
           height: "6px",
           borderRadius: "50%",
-          backgroundColor: "#f97316",
+          backgroundColor: "var(--color-primary)",
         }}
       />
     </motion.div>
@@ -169,7 +170,7 @@ export default function LoginSelectorPage() {
     <main
       style={{
         minHeight: "100vh",
-        backgroundColor: "#ffffff",
+        backgroundColor: "var(--color-0)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -188,16 +189,10 @@ export default function LoginSelectorPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: "easeOut" }}
           style={{
-            fontSize: "2rem",
-            fontWeight: 800,
-            color: "#f97316",
-            letterSpacing: "-0.04em",
             marginBottom: "2.5rem",
-            cursor: "pointer",
           }}
-          onClick={() => router.push("/")}
         >
-          Ubuyee
+          <UbuyeeLogo size="lg" onClick={() => router.push("/")} />
         </motion.div>
 
         {/* Heading Section */}
@@ -209,7 +204,7 @@ export default function LoginSelectorPage() {
             style={{
               fontSize: "2.25rem",
               fontWeight: 800,
-              color: "#111827",
+              color: "var(--color-900)",
               margin: 0,
               lineHeight: 1.1,
               letterSpacing: "-0.03em",
@@ -223,7 +218,7 @@ export default function LoginSelectorPage() {
             transition={{ delay: 0.2, duration: 0.5 }}
             style={{
               fontSize: "1rem",
-              color: "#6b7280",
+              color: "var(--color-500)",
               marginTop: "0.5rem",
             }}
           >
@@ -232,10 +227,9 @@ export default function LoginSelectorPage() {
         </div>
 
         {/* Roles Row */}
-        <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", justifyContent: "center" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "1.5rem", maxWidth: "560px", margin: "0 auto" }}>
           <RoleCard index={0} title="Customer" icon="🛍️" path="/user/login" />
           <RoleCard index={1} title="Vendor" icon="🏪" path="/vendor/login" />
-          <RoleCard index={2} title="Admin" icon="🛡️" path="/admin/login" />
         </div>
 
         {/* Footer Section */}
@@ -255,12 +249,12 @@ export default function LoginSelectorPage() {
             }}
           />
 
-          <div style={{ fontSize: "0.875rem", color: "#6b7280", display: "flex", gap: "0.5rem" }}>
+          <div style={{ fontSize: "0.875rem", color: "var(--color-500)", display: "flex", gap: "0.5rem" }}>
             New to Ubuyee?
             <span
               onClick={() => router.push("/signup")}
               style={{
-                color: "#f97316",
+                color: "var(--color-primary)",
                 fontWeight: 600,
                 cursor: "pointer",
                 transition: "text-decoration 0.2s",

@@ -1,9 +1,15 @@
-export const radius = {
-  none: "0px",
-  sm:   "4px",
-  md:   "8px",
-  lg:   "12px",
-  xl:   "16px",
-  "2xl":"20px",
-  full: "9999px",
-}
+// ─── Ubuyee Design Tokens: Border Radius (wraps CSS vars) ───────────────────
+const radius = {
+  none:  "0px",
+  xs:    "var(--radius-xs)",
+  sm:    "var(--radius-sm)",
+  md:    "var(--radius-md)",
+  lg:    "var(--radius-lg)",
+  xl:    "var(--radius-xl)",
+  "2xl": "var(--radius-2xl)",
+  "3xl": "var(--radius-3xl)",
+  "4xl": "var(--radius-4xl)",
+  full:  "var(--radius-full)",
+} as const
+
+export default radius

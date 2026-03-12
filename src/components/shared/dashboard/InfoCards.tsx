@@ -3,8 +3,8 @@
 import React from "react";
 
 /**
- * Task 1-5: Enhanced Shopping Guide InfoCards
- * Infinite auto-scrolling marquee with premium editorial cards.
+ * Task 3: Enhanced Shopping Guide InfoCards (Fixed)
+ * Clean, consistent cards without buttons.
  */
 
 interface CardProps {
@@ -12,8 +12,6 @@ interface CardProps {
   headline: string;
   body?: string;
   hasAccentLine?: boolean;
-  hasButton?: boolean;
-  buttonText?: string;
   bottomLabel?: string;
   bottomLabelColor?: string;
   hasChecklist?: boolean;
@@ -28,8 +26,6 @@ const Card = ({
   headline,
   body,
   hasAccentLine,
-  hasButton,
-  buttonText,
   bottomLabel,
   bottomLabelColor,
   hasChecklist,
@@ -42,14 +38,14 @@ const Card = ({
     width: "300px",
     minWidth: "300px",
     height: "360px",
-    backgroundColor: "#fdfcfb",
-    border: "1px solid #ede9e3",
-    borderRadius: "6px",
-    padding: "36px 28px",
+    backgroundColor: "var(--color-0)",
+    border: "1px solid var(--color-100)",
+    borderRadius: "var(--radius-md)",
+    padding: "36px 28px 24px 28px",
     display: "flex",
     flexDirection: "column",
     position: "relative",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
+    boxShadow: "var(--shadow-sm)",
     transition: "box-shadow 0.3s ease, transform 0.3s ease",
     cursor: "pointer",
     boxSizing: "border-box",
@@ -60,43 +56,50 @@ const Card = ({
     fontWeight: 700,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
-    color: "#9ca3af",
-    marginBottom: "24px",
+    color: "var(--color-400)",
+    marginBottom: "20px",
+    flexShrink: 0,
   };
 
   const headlineStyle: React.CSSProperties = {
     fontSize: "24px",
     fontWeight: 800,
-    color: "#111111",
+    color: "var(--color-900)",
     lineHeight: 1.15,
     fontFamily: 'Georgia, "Times New Roman", serif',
     margin: 0,
     whiteSpace: "pre-line",
+    flexShrink: 0,
   };
 
   const accentLineStyle: React.CSSProperties = {
     width: "60px",
     height: "4px",
-    backgroundColor: "#f97316",
+    backgroundColor: "var(--color-primary)",
     borderRadius: "2px",
-    marginTop: "16px",
-    marginBottom: "16px",
+    marginTop: "10px",
+    marginBottom: "12px",
+    flexShrink: 0,
   };
 
   const bodyStyle: React.CSSProperties = {
     fontSize: "13px",
-    color: "#4b5563",
+    color: "var(--color-600)",
     lineHeight: "1.7",
     marginTop: "16px",
   };
 
+  const bottomLabelAreaStyle: React.CSSProperties = {
+    flexShrink: 0,
+    paddingTop: "12px",
+    borderTop: "1px solid var(--color-200)",
+    marginTop: "auto",
+  };
+
   const bottomLabelStyle: React.CSSProperties = {
-    position: "absolute",
-    bottom: "28px",
-    left: "28px",
-    fontSize: "11px",
+    fontSize: "0.75rem",
     fontWeight: 600,
-    color: bottomLabelColor || "#374151",
+    color: bottomLabelColor || "var(--color-700)",
   };
 
   const badgeStyle: React.CSSProperties = {
@@ -106,94 +109,81 @@ const Card = ({
     transform: "translateX(-50%)",
     width: "32px",
     height: "6px",
-    backgroundColor: "#f97316",
-    borderRadius: "999px",
+    backgroundColor: "var(--color-primary)",
+    borderRadius: "var(--radius-full)",
   };
 
   return (
     <div
       style={cardStyle}
       onMouseEnter={(e) => {
-        e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.08)";
+        e.currentTarget.style.boxShadow = "var(--shadow-lg)";
         e.currentTarget.style.transform = "translateY(-4px)";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.02)";
+        e.currentTarget.style.boxShadow = "var(--shadow-sm)";
         e.currentTarget.style.transform = "translateY(0)";
       }}
     >
-      <div style={categoryStyle}>{category}</div>
-      <h3 style={headlineStyle}>{headline}</h3>
+      {/* Content Area */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div style={categoryStyle}>{category}</div>
+        <h3 style={headlineStyle}>{headline}</h3>
 
-      {hasAccentLine && <div style={accentLineStyle} />}
+        {hasAccentLine && <div style={accentLineStyle} />}
 
-      {body && <p style={bodyStyle}>{body}</p>}
+        <div style={{ flex: 1, overflow: "hidden" }}>
+          {body && <p style={bodyStyle}>{body}</p>}
 
-      {hasChecklist && checklistItems && (
-        <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
-          {checklistItems.map((item, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
-              <div style={{ width: "14px", height: "14px", border: "1px solid #d1d5db", borderRadius: "3px", marginTop: "2px", flexShrink: 0 }} />
-              <span style={{ fontSize: "13px", color: "#374151" }}>{item}</span>
+          {hasChecklist && checklistItems && (
+            <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "10px" }}>
+              {checklistItems.map((item, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "10px" }}>
+                  <div style={{ width: "14px", height: "14px", border: "1px solid var(--color-300)", borderRadius: "3px", marginTop: "2px", flexShrink: 0 }} />
+                  <span style={{ fontSize: "13px", color: "var(--color-700)" }}>{item}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
+
+          {hasBlocks && blockItems && (
+            <div style={{ marginTop: "20px", display: "flex", gap: "12px" }}>
+              {blockItems.map((item, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: "100px",
+                    height: "80px",
+                    border: "1px solid var(--color-200)",
+                    borderRadius: "8px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "11px",
+                    color: "var(--color-500)",
+                    textAlign: "center",
+                    padding: "10px",
+                    boxSizing: "border-box",
+                    background: "var(--color-0)"
+                  }}
+                >
+                  <strong style={{ color: "var(--color-900)", marginBottom: "4px" }}>{item.title}</strong>
+                  <span style={{ fontSize: "9px", lineHeight: 1.3 }}>{item.sub}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Label Area */}
+      {(bottomLabel || hasBadge) && (
+        <div style={bottomLabelAreaStyle}>
+          {bottomLabel && <div style={bottomLabelStyle}>{bottomLabel}</div>}
+          {hasBadge && <div style={badgeStyle} />}
         </div>
       )}
-
-      {hasBlocks && blockItems && (
-        <div style={{ marginTop: "20px", display: "flex", gap: "12px" }}>
-          {blockItems.map((item, i) => (
-            <div
-              key={i}
-              style={{
-                width: "100px",
-                height: "80px",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "11px",
-                color: "#6b7280",
-                textAlign: "center",
-                padding: "10px",
-                boxSizing: "border-box",
-                background: "#ffffff"
-              }}
-            >
-              <strong style={{ color: "#111111", marginBottom: "4px" }}>{item.title}</strong>
-              <span style={{ fontSize: "9px", lineHeight: 1.3 }}>{item.sub}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {hasButton && (
-        <button
-          style={{
-            backgroundColor: "#f97316",
-            color: "white",
-            fontSize: "12px",
-            fontWeight: 700,
-            padding: "10px 20px",
-            borderRadius: "6px",
-            border: "none",
-            cursor: "pointer",
-            marginTop: "auto",
-            display: "inline-block",
-            width: "fit-content",
-            transition: "opacity 0.2s"
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-          onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-        >
-          {buttonText}
-        </button>
-      )}
-
-      {bottomLabel && <div style={bottomLabelStyle}>{bottomLabel}</div>}
-      {hasBadge && <div style={badgeStyle} />}
     </div>
   );
 };
@@ -204,9 +194,7 @@ export default function InfoCards() {
       category: "SMART SHOPPING",
       headline: "The Buyer's\nSmart Guide:\nHow to Save\nMore Every Day",
       hasAccentLine: true,
-      buttonText: "Explore Now",
       bottomLabel: "Ubuyee Picks",
-      hasButton: true,
     },
     {
       category: "WHY UBUYEE",
@@ -240,7 +228,7 @@ export default function InfoCards() {
       headline: "Want deals\ndelivered to\nyour inbox\ndaily?",
       body: "Subscribe to Ubuyee alerts.\nNever miss a flash sale or\nnew arrival again.",
       bottomLabel: "Ubuyee",
-      bottomLabelColor: "#f97316",
+      bottomLabelColor: "var(--color-primary)",
     },
   ];
 
@@ -296,7 +284,6 @@ export default function InfoCards() {
 
       {/* Marquee Wrapper with Fade Edges */}
       <div style={{ position: "relative", width: "100%", overflow: "hidden" }}>
-        {/* Left Fade Overlay */}
         <div
           style={{
             position: "absolute",
@@ -310,7 +297,6 @@ export default function InfoCards() {
           }}
         />
 
-        {/* Right Fade Overlay */}
         <div
           style={{
             position: "absolute",
@@ -324,7 +310,6 @@ export default function InfoCards() {
           }}
         />
 
-        {/* The Marquee Track */}
         <div className="marquee-track">
           {slides.map((card, index) => (
             <Card key={index} {...card} />

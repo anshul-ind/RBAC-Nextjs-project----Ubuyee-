@@ -13,6 +13,7 @@ import {
   HelpCircle,
   LucideIcon
 } from "lucide-react";
+import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
 
 interface NavItemProps {
   label: string;
@@ -105,28 +106,7 @@ export default function AdminSidebar() {
           alignItems: "center",
         }}
       >
-        <div
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: 800,
-            color: "var(--primary-text)",
-            letterSpacing: "-0.03em",
-            position: "relative",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              top: "-0.3rem",
-              left: "0.1rem",
-              width: "6px",
-              height: "6px",
-              backgroundColor: "var(--primary-text)",
-              borderRadius: "50%",
-            }}
-          />
-          Ubuyee
-        </div>
+        <UbuyeeLogo size="sm" />
       </div>
 
       {/* Sidebar Navigation */}

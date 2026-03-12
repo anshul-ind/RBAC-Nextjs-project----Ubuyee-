@@ -1,9 +1,9 @@
 "use client";
 
 import { useAppSelector } from "@/store/hooks";
-import { UserDashboardClient } from "@/components/shared/dashboard/UserDashboardClient";
 import DealCarousel from "@/components/shared/dashboard/DealCarousel";
 import InfoCards from "@/components/shared/dashboard/InfoCards";
+import BestProducts from "@/components/shared/dashboard/BestProducts";
 
 export default function UserDashboardPage() {
   const user = useAppSelector((state) => state.auth.user);
@@ -17,9 +17,9 @@ export default function UserDashboardPage() {
       }}
     >
       {/* Page content wrapper with generous padding */}
-      <main style={{ maxWidth: "1400px", margin: "0 auto", padding: "28px 32px" }}>
+      <main style={{ maxWidth: "1400px", margin: "0 auto", padding: "1.5rem 2rem" }}>
         {/* Welcome text section */}
-        <div style={{ marginBottom: "28px" }}>
+        <div style={{ marginBottom: "1.5rem" }}>
           <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#111827", margin: "0 0 8px 0" }}>
             Good morning, {user?.name || "Customer"} 👋
           </h1>
@@ -28,21 +28,21 @@ export default function UserDashboardPage() {
           </p>
         </div>
 
-        {/* Carousel Section (padding: 0, margin-bottom: 48px) */}
-        <div style={{ padding: 0, marginBottom: "48px", position: "relative" }}>
+        {/* Carousel Section (margin-bottom: 2.5rem) */}
+        <div style={{ marginBottom: "2.5rem" }}>
           <DealCarousel />
         </div>
 
-        {/* InfoCards Section (margin-bottom: 40px) */}
-        <div style={{ marginBottom: "40px" }}>
+        {/* InfoCards Section (margin-bottom: 2.5rem) */}
+        <div style={{ marginBottom: "2.5rem" }}>
           <InfoCards />
         </div>
 
-        {/* Stats cards row */}
-        <UserDashboardClient />
+        {/* Best Products grid */}
+        <BestProducts />
         
-        {/* Charts section spacer */}
-        <div style={{ marginBottom: "32px" }} />
+        {/* Extra space at bottom */}
+        <div style={{ marginBottom: "2.5rem" }} />
       </main>
     </div>
   );

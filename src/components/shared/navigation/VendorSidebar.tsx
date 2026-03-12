@@ -13,6 +13,7 @@ import {
   X,
   LucideIcon
 } from "lucide-react";
+import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
 
 interface VendorSidebarProps {
   onClose: () => void;
@@ -39,23 +40,23 @@ const NavItem = ({ label, icon: Icon, path, isActive, onClick }: NavItemProps) =
         margin: "0.125rem 0.5rem",
         fontSize: "0.875rem",
         fontWeight: isActive ? 600 : 500,
-        color: isActive ? "var(--primary-text)" : "#374151",
-        backgroundColor: isActive ? "var(--primary-bg)" : "transparent",
-        borderLeft: isActive ? "3px solid var(--primary-text)" : "none",
+        color: isActive ? "var(--color-primary)" : "var(--color-700)",
+        backgroundColor: isActive ? "var(--color-primary-light)" : "transparent",
+        borderLeft: isActive ? "3px solid var(--color-primary)" : "none",
         paddingLeft: isActive ? "calc(1rem - 3px)" : "1rem",
         cursor: "pointer",
         transition: "all 0.15s ease",
       }}
       onMouseEnter={(e) => {
         if (!isActive) {
-          e.currentTarget.style.backgroundColor = "var(--accent-bg)";
-          e.currentTarget.style.color = "#111827";
+          e.currentTarget.style.backgroundColor = "var(--color-50)";
+          e.currentTarget.style.color = "var(--color-900)";
         }
       }}
       onMouseLeave={(e) => {
         if (!isActive) {
           e.currentTarget.style.backgroundColor = "transparent";
-          e.currentTarget.style.color = "#374151";
+          e.currentTarget.style.color = "var(--color-700)";
         }
       }}
     >
@@ -90,7 +91,7 @@ export default function VendorSidebar({ onClose }: VendorSidebarProps) {
       {/* Sidebar Top */}
       <div
         style={{
-          padding: "1.25rem 1rem",
+          padding: "0 1rem",
           borderBottom: "1px solid var(--neutral-border)",
           height: "4rem",
           display: "flex",
@@ -98,43 +99,35 @@ export default function VendorSidebar({ onClose }: VendorSidebarProps) {
           justifyContent: "space-between",
         }}
       >
-        <div
-          style={{
-            fontSize: "1.25rem",
-            fontWeight: 800,
-            color: "var(--primary-text)",
-            letterSpacing: "-0.03em",
-          }}
-        >
-          Ubuyee
-        </div>
         <button
           onClick={onClose}
           style={{
             width: "2rem",
             height: "2rem",
             borderRadius: "8px",
-            backgroundColor: "var(--accent-bg)",
+            backgroundColor: "var(--color-50)",
             border: "1px solid var(--neutral-border)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             cursor: "pointer",
-            fontSize: "1rem",
-            color: "var(--neutral-muted)",
+            color: "var(--color-700)",
             transition: "all 0.2s ease",
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--primary-bg)";
-            e.currentTarget.style.color = "var(--primary-text)";
+            e.currentTarget.style.backgroundColor = "var(--color-primary-light)";
+            e.currentTarget.style.color = "var(--color-primary)";
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "var(--accent-bg)";
-            e.currentTarget.style.color = "var(--neutral-muted)";
+            e.currentTarget.style.backgroundColor = "var(--color-50)";
+            e.currentTarget.style.color = "var(--color-700)";
           }}
         >
-          <X size={16} />
+          <X size={18} />
         </button>
+        <div>
+          <UbuyeeLogo size="sm" />
+        </div>
       </div>
 
       {/* Sidebar Navigation */}

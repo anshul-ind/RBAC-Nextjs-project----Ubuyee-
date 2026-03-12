@@ -14,7 +14,19 @@ export async function POST(request: NextRequest) {
   try {
     await connectToDatabase();
 
-    const { name, email, password, role } = await request.json();
+    const body = await request.json();
+    const { name, email, password, role } = body;
+
+    // BLOCK: No one can sign up as admin via API
+    if (role === "admin") {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Admin accounts cannot be created through public registration.",
+        },
+        { status: 403 }
+      );
+    }
 
     if (!email || !password) {
       return NextResponse.json(
@@ -64,9 +76,17 @@ export async function POST(request: NextRequest) {
       role: requestedRole,
     });
 
-    /* 
-    // We no longer auto-login after signup per user request 
+    // Auto-login after signup
     const token = await generateToken(newUser._id.toString(), newUser.role);
+    
+    const response = NextResponse.json(
+      {
+        message: "User signed up successfully.",
+        user: { id: newUser._id, email: newUser.email, role: newUser.role },
+      },
+      { status: 201 },
+    );
+
     response.cookies.set("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -74,15 +94,8 @@ export async function POST(request: NextRequest) {
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
-    */
 
-    return NextResponse.json(
-      {
-        message: "User signed up successfully. Please log in.",
-        user: { id: newUser._id, email: newUser.email, role: newUser.role },
-      },
-      { status: 201 },
-    );
+    return response;
   } catch (error) {
     console.error("DEBUG SIGNUP ERROR:", error);
     return NextResponse.json(

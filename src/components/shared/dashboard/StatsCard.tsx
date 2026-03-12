@@ -14,17 +14,17 @@ type StatsCardProps = {
  */
 export function StatsCard({ title, value, subtitle }: StatsCardProps) {
   const cardStyle: React.CSSProperties = {
-    backgroundColor: "#ffffff",
-    border: "1px solid #f3f4f6",
-    borderRadius: "12px",
+    backgroundColor: "var(--color-0)",
+    border: "1px solid var(--color-100)",
+    borderRadius: "var(--radius-xl)",
     padding: "20px",
-    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+    boxShadow: "var(--shadow-sm)",
     transition: "transform 0.2s, box-shadow 0.2s",
   };
 
   const titleStyle: React.CSSProperties = {
-    fontSize: "0.875rem",
-    color: "#6b7280", // Muted text
+    fontSize: "var(--text-base)",
+    color: "var(--color-500)",
     marginBottom: "8px",
     fontWeight: 500,
   };
@@ -32,12 +32,12 @@ export function StatsCard({ title, value, subtitle }: StatsCardProps) {
   const valueStyle: React.CSSProperties = {
     fontSize: "1.75rem",
     fontWeight: "bold",
-    color: "#f97316", // Primary orange accent
+    color: "var(--color-primary)",
   };
 
   const subtitleStyle: React.CSSProperties = {
     fontSize: "0.8125rem",
-    color: "#94a3b8",
+    color: "var(--color-400)",
     marginTop: "4px",
   };
 
@@ -46,11 +46,11 @@ export function StatsCard({ title, value, subtitle }: StatsCardProps) {
       style={cardStyle}
       onMouseEnter={(e) => {
         e.currentTarget.style.transform = "translateY(-2px)";
-        e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.08)";
+        e.currentTarget.style.boxShadow = "var(--shadow-md)";
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "translateY(0)";
-        e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)";
+        e.currentTarget.style.boxShadow = "var(--shadow-sm)";
       }}
     >
       <div style={titleStyle}>{title}</div>

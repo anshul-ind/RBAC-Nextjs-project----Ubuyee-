@@ -6,9 +6,10 @@ import axios from "axios";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useAppDispatch } from "@/store/hooks";
-import { setCredentials } from "@/store/slices/authSlice";
-import { FiEye, FiEyeOff, FiArrowRight, FiLogIn } from "react-icons/fi";
+import { loginThunk } from "@/store/slices/authSlice";
+import { FiEye, FiEyeOff, FiArrowRight, FiLogIn, FiAlertCircle } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { primary, neutral, radius, success, error as errorColors } from "@/theme";
 
 /**
  * LoginForm – Redesigned for White Theme
@@ -22,9 +23,19 @@ const ROLE_DASHBOARD: Record<string, string> = {
 
 type LoginFormProps = {
   role: "user" | "vendor" | "admin";
+  portalOrigin: "user" | "vendor" | "admin";
+  submitButtonBackground?: string;
+  submitButtonHoverBackground?: string;
+  submitButtonText?: string;
 };
 
-export function LoginForm({ role }: LoginFormProps) {
+export function LoginForm({
+  role,
+  portalOrigin,
+  submitButtonBackground = "var(--color-primary)",
+  submitButtonHoverBackground = "var(--color-primary-hover)",
+  submitButtonText
+}: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
@@ -48,25 +59,22 @@ export function LoginForm({ role }: LoginFormProps) {
     setIsLoading(true);
 
     try {
-      const { data } = await axios.post("/api/auth/login", {
-        email,
-        password,
-        role,
-      });
+      const result = await dispatch(loginThunk({ email, password, portalOrigin }));
 
-      dispatch(
-        setCredentials({
-          user: data.user,
-          token: null,
-        }),
-      );
-
-      toast.success("Login successful!", { id: "login-toast" });
-      router.push(ROLE_DASHBOARD[role] ?? "/");
+      if (loginThunk.fulfilled.match(result)) {
+        toast.success("Login successful!", { id: "login-toast" });
+        router.push(ROLE_DASHBOARD[portalOrigin] ?? "/login");
+      } else {
+        const errorMsg = (result.payload as string) ?? "Login failed. Please try again.";
+        setError(errorMsg);
+        
+        // Suppress toast for access denied to avoid cluttering if the UI shows it clearly
+        if (!errorMsg.includes("Access denied")) {
+          toast.error(errorMsg, { id: "login-error-toast" });
+        }
+      }
     } catch (err: unknown) {
-      const errorMsg = axios.isAxiosError(err)
-        ? (err.response?.data?.error ?? "Login failed. Please try again.")
-        : "An unexpected error occurred.";
+      const errorMsg = "An unexpected error occurred.";
       setError(errorMsg);
       toast.error(errorMsg, { id: "login-error-toast" });
     } finally {
@@ -76,12 +84,12 @@ export function LoginForm({ role }: LoginFormProps) {
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
-    background: "#f9fafb",
-    border: "1.5px solid #e5e7eb",
-    borderRadius: "12px",
+    background: neutral[50],
+    border: `1.5px solid ${neutral[200]}`,
+    borderRadius: radius.xl,
     padding: "0.75rem 1rem",
     fontSize: "0.9rem",
-    color: "#111827",
+    color: neutral[900],
     outline: "none",
     transition: "all 0.2s ease",
     boxSizing: "border-box",
@@ -92,7 +100,7 @@ export function LoginForm({ role }: LoginFormProps) {
     fontWeight: 700,
     letterSpacing: "0.1em",
     textTransform: "uppercase",
-    color: "#374151",
+    color: neutral[700],
     marginBottom: "0.375rem",
     display: "block",
   };
@@ -151,13 +159,13 @@ export function LoginForm({ role }: LoginFormProps) {
               background: "none",
               border: "none",
               cursor: "pointer",
-              color: "#9ca3af",
+              color: neutral[400],
               display: "flex",
               alignItems: "center",
               transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#f97316")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = primary.DEFAULT)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = neutral[400])}
           >
             {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
           </button>
@@ -169,10 +177,10 @@ export function LoginForm({ role }: LoginFormProps) {
         <div
           style={{
             padding: "0.75rem",
-            background: "#f0fdf4",
-            border: "1px solid #bbf7d0",
-            borderRadius: "12px",
-            color: "#16a34a",
+            background: success.light,
+            border: `1px solid ${success.border}`,
+            borderRadius: radius.xl,
+            color: success.text,
             fontSize: "0.85rem",
             textAlign: "center",
             marginBottom: "1.25rem",
@@ -184,23 +192,40 @@ export function LoginForm({ role }: LoginFormProps) {
 
       {/* Inline error message */}
       {error && (
-        <p style={{ color: "#ef4444", fontSize: "0.82rem", margin: "0 0 1.25rem 0", textAlign: "center" }}>
-          ⚠ {error}
-        </p>
+        <div
+          style={{
+            background: errorColors.light,
+            border: `1px solid ${errorColors.border}`,
+            borderRadius: radius.lg,
+            padding: "0.75rem 1rem",
+            color: errorColors.text,
+            fontSize: "0.875rem",
+            fontWeight: 500,
+            textAlign: "center",
+            marginTop: "0.5rem",
+            marginBottom: "1.25rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "0.5rem",
+          }}
+        >
+          <FiAlertCircle size={18} />
+          <span>{error}</span>
+        </div>
       )}
 
-      {/* Submit button */}
       <button
         type="submit"
         disabled={isLoading}
         style={{
           width: "100%",
-          background: "#f97316",
-          color: "#ffffff",
+          background: submitButtonBackground,
+          color: "var(--color-0)",
           fontSize: "0.95rem",
           fontWeight: 700,
           padding: "0.875rem 1.5rem",
-          borderRadius: "12px",
+          borderRadius: "var(--radius-xl)",
           border: "none",
           cursor: isLoading ? "not-allowed" : "pointer",
           display: "flex",
@@ -214,14 +239,14 @@ export function LoginForm({ role }: LoginFormProps) {
         } as React.CSSProperties}
         onMouseEnter={(e) => {
           if (!isLoading) {
-            e.currentTarget.style.background = "#ea6c0a";
+            e.currentTarget.style.background = submitButtonHoverBackground;
             e.currentTarget.style.transform = "translateY(-1px)";
-            e.currentTarget.style.boxShadow = "0 6px 20px rgba(249,115,22,0.35)";
+            e.currentTarget.style.boxShadow = "var(--shadow-md)";
           }
         }}
         onMouseLeave={(e) => {
           if (!isLoading) {
-            e.currentTarget.style.background = "#f97316";
+            e.currentTarget.style.background = submitButtonBackground;
             e.currentTarget.style.transform = "translateY(0)";
             e.currentTarget.style.boxShadow = "none";
           }
@@ -233,6 +258,8 @@ export function LoginForm({ role }: LoginFormProps) {
             transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
             style={{ width: "18px", height: "18px", border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%" }}
           />
+        ) : submitButtonText ? (
+          <span dangerouslySetInnerHTML={{ __html: submitButtonText }} />
         ) : (
           <>
             Sign in as {role.charAt(0).toUpperCase() + role.slice(1)}
@@ -244,9 +271,9 @@ export function LoginForm({ role }: LoginFormProps) {
       {/* Shared Focus CSS logic */}
       <style jsx global>{`
         .auth-input:focus {
-          border-color: #f97316 !important;
+          border-color: var(--color-primary) !important;
           box-shadow: 0 0 0 3px rgba(249,115,22,0.1) !important;
-          background: #ffffff !important;
+          background: var(--color-0) !important;
         }
       `}</style>
     </motion.form>

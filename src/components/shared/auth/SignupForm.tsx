@@ -7,17 +7,27 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { FiEye, FiEyeOff, FiArrowRight, FiUserPlus } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { useAppDispatch } from "@/store/hooks";
+import { signupThunk } from "@/store/slices/authSlice";
 
 /**
  * SignupForm – Redesigned for White Theme
  */
 
-type SignupFormProps = {
-  role: "user" | "vendor" | "admin";
+const ROLE_DASHBOARD: Record<string, string> = {
+  user: "/user/dashboard",
+  vendor: "/vendor/dashboard",
+  admin: "/admin/dashboard",
 };
 
-export function SignupForm({ role }: SignupFormProps) {
+type SignupFormProps = {
+  role: "user" | "vendor" | "admin";
+  portalOrigin: "user" | "vendor" | "admin";
+};
+
+export function SignupForm({ role, portalOrigin }: SignupFormProps) {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -32,15 +42,18 @@ export function SignupForm({ role }: SignupFormProps) {
     setIsLoading(true);
 
     try {
-      await axios.post("/api/auth/signup", {
-        name,
-        email,
-        password,
-        role,
-      });
+      const result = await dispatch(
+        signupThunk({ name, email, password, role })
+      );
 
-      toast.success("Account created! Please sign in.", { duration: 5000 });
-      router.push(`/${role}/login?signup=success`);
+      if (signupThunk.fulfilled.match(result)) {
+        toast.success("Account created successfully!", { duration: 5000 });
+        router.push(ROLE_DASHBOARD[portalOrigin] ?? "/login");
+      } else {
+        const errorMsg = (result.payload as string) ?? "Sign up failed. Please try again.";
+        setError(errorMsg);
+        toast.error(errorMsg);
+      }
     } catch (err: unknown) {
       const errorMsg = axios.isAxiosError(err)
         ? (err.response?.data?.error ?? "Sign up failed. Please try again.")
@@ -54,12 +67,12 @@ export function SignupForm({ role }: SignupFormProps) {
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
-    background: "#f9fafb",
-    border: "1.5px solid #e5e7eb",
-    borderRadius: "12px",
+    background: "var(--color-50)",
+    border: "1.5px solid var(--color-200)",
+    borderRadius: "var(--radius-xl)",
     padding: "0.75rem 1rem",
     fontSize: "0.9rem",
-    color: "#111827",
+    color: "var(--color-900)",
     outline: "none",
     transition: "all 0.2s ease",
     boxSizing: "border-box",
@@ -70,7 +83,7 @@ export function SignupForm({ role }: SignupFormProps) {
     fontWeight: 700,
     letterSpacing: "0.1em",
     textTransform: "uppercase",
-    color: "#374151",
+    color: "var(--color-700)",
     marginBottom: "0.375rem",
     display: "block",
   };
@@ -146,13 +159,13 @@ export function SignupForm({ role }: SignupFormProps) {
               background: "none",
               border: "none",
               cursor: "pointer",
-              color: "#9ca3af",
+              color: "var(--color-400)",
               display: "flex",
               alignItems: "center",
               transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#f97316")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "#9ca3af")}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "var(--color-primary)")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--color-400)")}
           >
             {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
           </button>
@@ -161,7 +174,7 @@ export function SignupForm({ role }: SignupFormProps) {
 
       {/* Inline error message */}
       {error && (
-        <p style={{ color: "#ef4444", fontSize: "0.82rem", margin: "0 0 1.25rem 0", textAlign: "center" }}>
+        <p style={{ color: "var(--color-error-text)", fontSize: "0.82rem", margin: "0 0 1.25rem 0", textAlign: "center" }}>
           ⚠ {error}
         </p>
       )}
@@ -172,12 +185,12 @@ export function SignupForm({ role }: SignupFormProps) {
         disabled={isLoading}
         style={{
           width: "100%",
-          background: "#f97316",
-          color: "#ffffff",
+          background: "var(--color-primary)",
+          color: "var(--color-0)",
           fontSize: "0.95rem",
           fontWeight: 700,
           padding: "0.875rem 1.5rem",
-          borderRadius: "12px",
+          borderRadius: "var(--radius-xl)",
           border: "none",
           cursor: isLoading ? "not-allowed" : "pointer",
           display: "flex",
@@ -191,14 +204,14 @@ export function SignupForm({ role }: SignupFormProps) {
         } as React.CSSProperties}
         onMouseEnter={(e) => {
           if (!isLoading) {
-            e.currentTarget.style.background = "#ea6c0a";
+            e.currentTarget.style.background = "var(--color-primary-hover)";
             e.currentTarget.style.transform = "translateY(-1px)";
             e.currentTarget.style.boxShadow = "0 6px 20px rgba(249,115,22,0.35)";
           }
         }}
         onMouseLeave={(e) => {
           if (!isLoading) {
-            e.currentTarget.style.background = "#f97316";
+            e.currentTarget.style.background = "var(--color-primary)";
             e.currentTarget.style.transform = "translateY(0)";
             e.currentTarget.style.boxShadow = "none";
           }
@@ -221,9 +234,9 @@ export function SignupForm({ role }: SignupFormProps) {
       {/* Shared Focus CSS logic */}
       <style jsx global>{`
         .auth-input:focus {
-          border-color: #f97316 !important;
+          border-color: var(--color-primary) !important;
           box-shadow: 0 0 0 3px rgba(249,115,22,0.1) !important;
-          background: #ffffff !important;
+          background: var(--color-0) !important;
         }
       `}</style>
     </motion.form>

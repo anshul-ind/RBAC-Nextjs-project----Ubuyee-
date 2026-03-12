@@ -1,20 +1,23 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { LoginForm } from "@/components/shared/auth/LoginForm";
 import { FiShoppingBag } from "react-icons/fi";
 import { motion } from "framer-motion";
+import UbuyeeLogo from "@/components/shared/UbuyeeLogo";
 
 /**
  * Vendor Login Page — Redesigned for White Theme
  */
 
 export default function VendorLoginPage() {
+  const router = useRouter();
   return (
     <main
       style={{
         minHeight: "100vh",
-        background: "#ffffff",
+        background: "var(--color-0)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -57,7 +60,7 @@ export default function VendorLoginPage() {
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
         style={{
-          background: "#ffffff",
+          background: "var(--color-0)",
           border: "1px solid #f3f4f6",
           borderRadius: "20px",
           padding: "2.5rem 2rem",
@@ -89,51 +92,65 @@ export default function VendorLoginPage() {
               width: "3.5rem",
               height: "3.5rem",
               borderRadius: "50%",
-              background: "#fff7ed",
+              background: "var(--color-primary-light)",
               border: "2px solid #fed7aa",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 1.25rem",
-              color: "#f97316",
+              color: "var(--color-primary)",
             }}
           >
             <FiShoppingBag size="1.5rem" />
           </div>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#111827", margin: "0 0 0.375rem" }}>
+          <div style={{ marginBottom: "0.75rem" }}>
+            <UbuyeeLogo size="md" />
+          </div>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--color-900)", margin: "0 0 0.375rem" }}>
             Vendor Sign In
           </h1>
-          <p style={{ fontSize: "0.875rem", color: "#6b7280", margin: "0 0 2rem" }}>
+          <p style={{ fontSize: "0.875rem", color: "var(--color-500)", margin: "0 0 2rem" }}>
             Access your vendor dashboard
           </p>
         </div>
 
         {/* LoginForm wired to Vendor */}
-        <LoginForm role="vendor" />
+        <LoginForm role="vendor" portalOrigin="vendor" />
 
         {/* Footer Links */}
         <div style={{ marginTop: "1rem" }}>
-          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "#6b7280", margin: 0 }}>
+          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "var(--color-500)", margin: 0 }}>
             No account?{" "}
             <Link
               href="/vendor/signup"
-              style={{ color: "#f97316", fontWeight: 600, textDecoration: "none" }}
+              style={{ color: "var(--color-primary)", fontWeight: 600, textDecoration: "none" }}
               onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
               onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
             >
               Sign up
             </Link>
           </p>
-          <div style={{ width: "100%", height: "1px", background: "#f3f4f6", margin: "0.875rem 0" }} />
-          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "#6b7280", margin: 0 }}>
-            Not a user?{" "}
-            <Link
-              href="/login"
-              style={{ color: "#f97316", fontWeight: 600, textDecoration: "none" }}
+          <div style={{ width: "100%", height: "1px", background: "var(--color-100)", margin: "0.875rem 0" }} />
+          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "var(--color-500)", margin: 0 }}>
+            Do you want to sign in as a User?
+            <span
+              onClick={() => router.push("/user/login")}
+              style={{ color: "var(--color-primary)", fontWeight: 600, cursor: "pointer", marginLeft: "4px" }}
               onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
               onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
             >
-              Choose a different role
+              Click here
+            </span>
+          </p>
+          <div style={{ width: "100%", height: "1px", background: "var(--color-100)", margin: "0.875rem 0" }} />
+          <p style={{ textAlign: "center", fontSize: "0.825rem", color: "var(--color-500)", margin: 0 }}>
+            <Link
+              href="/login"
+              style={{ color: "var(--color-primary)", fontWeight: 600, textDecoration: "none" }}
+              onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
+              onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
+            >
+              Sign in with a different account &rarr;
             </Link>
           </p>
         </div>
