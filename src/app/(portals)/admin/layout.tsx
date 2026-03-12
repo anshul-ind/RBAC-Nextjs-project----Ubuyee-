@@ -1,38 +1,46 @@
 "use client"
-import React, { useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAppSelector } from "@/store/hooks"
-import { selectAuth } from "@/store/slices/authSlice"
+import { useAppSelector, useAppDispatch } from "@/store/hooks"
+import { selectAuth, hydrateAuthThunk } from "@/store/slices/authSlice"
 import AdminSidebar from "@/components/shared/navigation/AdminSidebar"
 import AdminTopNav from "@/components/shared/navigation/AdminTopNav"
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  const [checked, setChecked] = useState(false)
   const { user, isAuthenticated, isLoading } = useAppSelector(selectAuth)
   const role = user?.role
 
   useEffect(() => {
-    // Wait until loading is done
-    if (isLoading) return
+    const initAuth = async () => {
+      if (!isAuthenticated) {
+        await dispatch(hydrateAuthThunk())
+      }
+      setChecked(true)
+    }
+    initAuth()
+  }, [])
 
-    // If not authenticated redirect to login
+  useEffect(() => {
+    if (!checked) return
+
     if (!isAuthenticated) {
       router.replace("/admin/login")
       return
     }
 
-    // If wrong role redirect to correct portal
     if (role !== "admin") {
-      // Send them to their own dashboard
       const fallback = role === "vendor"
         ? "/vendor/dashboard"
         : "/user/dashboard"
       router.replace(fallback)
     }
-  }, [isAuthenticated, isLoading, role, router])
+  }, [checked, isAuthenticated, role, router])
 
   // CRITICAL: Show loading spinner while hydrating
-  if (isLoading) {
+  if (!checked || isLoading) {
     return (
       <div style={{
         minHeight: "100vh",

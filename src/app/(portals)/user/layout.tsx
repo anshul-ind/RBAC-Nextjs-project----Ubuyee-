@@ -1,35 +1,43 @@
 "use client"
-import { useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAppSelector } from "@/store/hooks"
-import { selectAuth } from "@/store/slices/authSlice"
+import { useAppSelector, useAppDispatch } from "@/store/hooks"
+import { selectAuth, hydrateAuthThunk } from "@/store/slices/authSlice"
 import TopNav from "@/components/shared/navigation/TopNav"
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  const [checked, setChecked] = useState(false)
   const { user, isAuthenticated, isLoading } = useAppSelector(selectAuth)
   const role = user?.role;
 
   useEffect(() => {
-    // Wait until loading is done
-    if (isLoading) return
+    const initAuth = async () => {
+      if (!isAuthenticated) {
+        await dispatch(hydrateAuthThunk())
+      }
+      setChecked(true)
+    }
+    initAuth()
+  }, [])
 
-    // If not authenticated redirect to login
+  useEffect(() => {
+    if (!checked) return
+
     if (!isAuthenticated) {
       router.replace("/user/login")
       return
     }
 
-    // If wrong role redirect to correct portal
     const allowed = ["user", "vendor", "admin"]
     if (!allowed.includes(role ?? "")) {
       router.replace("/login")
     }
-  }, [isAuthenticated, isLoading, role, router])
+  }, [checked, isAuthenticated, role, router])
 
   // CRITICAL: Show loading spinner while hydrating
-  // This prevents the flash of broken UI
-  if (isLoading) {
+  if (!checked || isLoading) {
     return (
       <div style={{
         minHeight: "100vh",

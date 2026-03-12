@@ -1,37 +1,47 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAppSelector } from "@/store/hooks"
-import { selectAuth } from "@/store/slices/authSlice"
+import { useAppSelector, useAppDispatch } from "@/store/hooks"
+import { selectAuth, hydrateAuthThunk } from "@/store/slices/authSlice"
 import { motion, AnimatePresence } from "framer-motion"
 import VendorSidebar from "@/components/shared/navigation/VendorSidebar"
 import VendorTopNav from "@/components/shared/navigation/VendorTopNav"
 
 export default function VendorLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [checked, setChecked] = useState(false)
   const router = useRouter()
+  const dispatch = useAppDispatch()
+  
   const { user, isAuthenticated, isLoading } = useAppSelector(selectAuth)
   const role = user?.role
 
   useEffect(() => {
-    // Wait until loading is done
-    if (isLoading) return
+    const initAuth = async () => {
+      if (!isAuthenticated) {
+        await dispatch(hydrateAuthThunk())
+      }
+      setChecked(true)
+    }
+    initAuth()
+  }, [])
 
-    // If not authenticated redirect to login
+  useEffect(() => {
+    if (!checked) return
+
     if (!isAuthenticated) {
       router.replace("/vendor/login")
       return
     }
 
-    // If wrong role redirect to correct portal
     const allowed = ["user", "vendor", "admin"]
     if (!allowed.includes(role ?? "")) {
       router.replace("/login")
     }
-  }, [isAuthenticated, isLoading, role, router])
+  }, [checked, isAuthenticated, role, router])
 
   // CRITICAL: Show loading spinner while hydrating
-  if (isLoading) {
+  if (!checked || isLoading) {
     return (
       <div style={{
         minHeight: "100vh",

@@ -2,13 +2,16 @@ import connectToDatabase from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/jwt";
 import { UserModel as User } from "@/lib/db/models/User";
+import mongoose from "mongoose";
 
 /**
  * Returns the currently authenticated user based on the `token` cookie.
  */
 export async function GET(request: NextRequest) {
+  console.log("ME ROUTE HIT");
   try {
     const token = request.cookies.get("token")?.value;
+    console.log("ME TOKEN FOUND:", !!token);
 
     if (!token) {
       return NextResponse.json(
@@ -20,23 +23,34 @@ export async function GET(request: NextRequest) {
     let payload;
     try {
       payload = await verifyToken(token);
-    } catch {
-      return NextResponse.json(
+    } catch (error) {
+      console.log("ME TOKEN VERIFY FAILED:", error);
+      const res = NextResponse.json(
         { success: false, error: "Invalid token" },
         { status: 401 }
       );
+      res.cookies.delete("token");
+      return res;
     }
 
+    console.log("ME PAYLOAD:", payload);
     await connectToDatabase();
+    console.log("ME DB NAME:", mongoose.connection.name);
 
+    // The payload sub field contains the userId
     const user = await User.findById(payload.sub).select("-password").lean();
 
     if (!user) {
-      return NextResponse.json(
+      console.log("ME USER NOT FOUND FOR ID:", payload.sub);
+      const res = NextResponse.json(
         { success: false, error: "User not found" },
         { status: 404 }
       );
+      res.cookies.delete("token");
+      return res;
     }
+
+    console.log("ME USER FOUND:", { email: user.email, role: user.role });
 
     return NextResponse.json({
       success: true,

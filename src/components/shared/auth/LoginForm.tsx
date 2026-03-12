@@ -63,7 +63,8 @@ export function LoginForm({
 
       if (loginThunk.fulfilled.match(result)) {
         toast.success("Login successful!", { id: "login-toast" });
-        router.push(ROLE_DASHBOARD[portalOrigin] ?? "/login");
+        // Use portalOrigin to decide where to go (ignore role if needed)
+        router.push(ROLE_DASHBOARD[portalOrigin]);
       } else {
         const errorMsg = (result.payload as string) ?? "Login failed. Please try again.";
         setError(errorMsg);
