@@ -122,7 +122,7 @@ export default function DealCarousel() {
           marginBottom: "16px",
         }}
       >
-        <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--color-900)", margin: 0 }}>
+        <h2 style={{ fontSize: "18px", fontWeight: 600, color: "var(--color-900)", margin: 0 }}>
           Today's Deals
         </h2>
         <span
@@ -130,7 +130,7 @@ export default function DealCarousel() {
             fontSize: "13px",
             color: "#f97316",
             cursor: "pointer",
-            fontWeight: 600,
+            fontWeight: 500,
           }}
           onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
           onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
@@ -278,7 +278,7 @@ export default function DealCarousel() {
                 <span
                   style={{
                     fontSize: "clamp(0.6rem, 2vw, 0.75rem)",
-                    fontWeight: 700,
+                    fontWeight: 600,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
                     color: "var(--color-primary)",
@@ -295,7 +295,7 @@ export default function DealCarousel() {
                 <h3
                   style={{
                     fontSize: "clamp(1rem, 4vw, 1.75rem)",
-                    fontWeight: 800,
+                    fontWeight: 600,
                     color: "white",
                     margin: "0 0 0.25rem 0",
                     whiteSpace: "nowrap",

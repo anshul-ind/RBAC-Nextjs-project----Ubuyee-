@@ -53,7 +53,7 @@ const Card = ({
 
   const categoryStyle: React.CSSProperties = {
     fontSize: "clamp(0.6rem, 2vw, 0.65rem)",
-    fontWeight: 600,
+    fontWeight: 500,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
     color: "var(--color-400)",
@@ -63,7 +63,7 @@ const Card = ({
 
   const headlineStyle: React.CSSProperties = {
     fontSize: "clamp(1.1rem, 4vw, 1.5rem)",
-    fontWeight: 700,
+    fontWeight: 600,
     color: "var(--color-900)",
     lineHeight: 1.15,
     fontFamily: 'Inter, system-ui, sans-serif',
@@ -102,7 +102,7 @@ const Card = ({
 
   const bottomLabelStyle: React.CSSProperties = {
     fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)",
-    fontWeight: 600,
+    fontWeight: 500,
     color: bottomLabelColor || "var(--color-700)",
   };
 
@@ -253,13 +253,13 @@ export default function InfoCards() {
         }}
       >
         <div style={{ display: "flex", alignItems: "center" }}>
-          <h2 style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)", fontWeight: 600, color: "var(--color-900)", margin: 0 }}>
+          <h2 style={{ fontSize: "clamp(1rem, 3vw, 1.25rem)", fontWeight: 500, color: "var(--color-900)", margin: 0 }}>
             Shopping Guide
           </h2>
           <div
             style={{
               fontSize: "0.55rem",
-              fontWeight: 600,
+              fontWeight: 500,
               letterSpacing: "0.1em",
               color: "var(--color-error-text)",
               backgroundColor: "var(--color-error-light)",
@@ -279,7 +279,7 @@ export default function InfoCards() {
             fontSize: "clamp(0.75rem, 2vw, 0.825rem)",
             color: "var(--color-primary)",
             cursor: "pointer",
-            fontWeight: 600,
+            fontWeight: 500,
           }}
           onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
           onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}

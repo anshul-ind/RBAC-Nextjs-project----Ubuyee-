@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectAuth, logoutThunk } from "@/store/slices/authSlice";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   FiShoppingCart,
@@ -27,7 +27,6 @@ import { primary, neutral, radius, space } from "@/theme";
  */
 export default function TopNav() {
   const router = useRouter();
-  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { user, role } = useAppSelector(selectAuth);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,10 +58,6 @@ export default function TopNav() {
     router.push("/login");
   };
 
-  const checkActive = (path: string) => {
-    if (path === "/user/dashboard") return pathname === path;
-    return pathname.startsWith(path);
-  };
 
   return (
     <nav
@@ -112,7 +107,6 @@ export default function TopNav() {
         >
           {navLinks.map((link) => {
             const isHovered = hoveredLink === link.path;
-            const isActive = checkActive(link.path);
 
             return (
               <Link
@@ -127,10 +121,10 @@ export default function TopNav() {
                   padding: "0.5rem clamp(0.6rem, 1.5vw, 1rem)",
                   borderRadius: radius.lg,
                   fontSize: "0.875rem",
-                  fontWeight: isActive || isHovered ? 600 : 500,
-                  color: isActive || isHovered ? primary.DEFAULT : neutral[500],
+                  fontWeight: isHovered ? 600 : 500,
+                  color: isHovered ? primary.DEFAULT : neutral[500],
                   textDecoration: "none",
-                  backgroundColor: isActive || isHovered ? primary.light : "transparent",
+                  backgroundColor: isHovered ? primary.light : "transparent",
                   transition: "all 0.15s ease",
                   whiteSpace: "nowrap",
                   transform: isHovered ? "translateY(-1px)" : "translateY(0)",
@@ -345,7 +339,6 @@ export default function TopNav() {
             }}
           >
             {navLinks.map((link) => {
-              const isActive = checkActive(link.path);
               return (
                 <Link
                   key={link.path}
@@ -359,9 +352,9 @@ export default function TopNav() {
                     borderRadius: "var(--radius-lg)",
                     fontSize: "var(--text-md)",
                     fontWeight: 500,
-                    color: isActive ? "var(--color-primary)" : "var(--color-700)",
+                    color: "var(--color-700)",
                     textDecoration: "none",
-                    backgroundColor: isActive ? "var(--color-primary-light)" : "transparent",
+                    backgroundColor: "transparent",
                     transition: "all 0.2s ease",
                   }}
                 >

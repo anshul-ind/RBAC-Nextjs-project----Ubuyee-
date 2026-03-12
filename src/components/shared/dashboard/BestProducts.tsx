@@ -125,7 +125,7 @@ const ProductCard = ({
 
   const nameStyle: React.CSSProperties = {
     fontSize: "clamp(0.7rem, 2.5vw, 0.825rem)",
-    fontWeight: 600,
+    fontWeight: 500,
     color: isOrange ? "#ffffff" : "#111827",
     margin: 0,
     transition: "all 0.25s ease",
@@ -158,7 +158,7 @@ const ProductCard = ({
 
   const priceStyle: React.CSSProperties = {
     fontSize: "clamp(0.85rem, 3vw, 1.1rem)",
-    fontWeight: 700,
+    fontWeight: 600,
     color: isOrange ? "#ffffff" : "#111827",
     transition: "all 0.25s ease",
   };
@@ -176,7 +176,7 @@ const ProductCard = ({
     cursor: "pointer",
     transition: "all 0.15s ease",
     fontSize: "1rem",
-    fontWeight: 600,
+    fontWeight: 500,
   };
 
   return (
@@ -259,8 +259,8 @@ export default function BestProducts() {
         }}
       >
         <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
-          <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--color-primary)" }}>Best</span>
-          <span style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--color-900)" }}>Products</span>
+          <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--color-primary)" }}>Best</span>
+          <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--color-900)" }}>Products</span>
         </div>
 
         <span
@@ -268,7 +268,7 @@ export default function BestProducts() {
             fontSize: "0.8rem",
             color: "var(--color-primary)",
             cursor: "pointer",
-            fontWeight: 600,
+            fontWeight: 500,
           }}
           onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
           onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
