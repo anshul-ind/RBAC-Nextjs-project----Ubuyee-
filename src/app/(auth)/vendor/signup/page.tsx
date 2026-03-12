@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SignupForm } from "@/components/shared/auth/SignupForm";
@@ -115,7 +116,9 @@ export default function VendorSignupPage() {
         </div>
 
         {/* SignupForm wired to Vendor */}
-        <SignupForm role="vendor" portalOrigin="vendor" />
+        <Suspense fallback={<div style={{ textAlign: "center", padding: "2rem", color: "var(--color-500)" }}>Loading...</div>}>
+          <SignupForm role="vendor" portalOrigin="vendor" />
+        </Suspense>
 
         {/* Footer Links */}
         <div style={{ marginTop: "1rem" }}>

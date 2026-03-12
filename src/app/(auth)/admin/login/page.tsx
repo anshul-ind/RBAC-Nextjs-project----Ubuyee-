@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { LoginForm } from "@/components/shared/auth/LoginForm";
 import { FiShield } from "react-icons/fi";
@@ -113,7 +114,9 @@ export default function AdminLoginPage() {
         </div>
 
         {/* LoginForm wired to Admin */}
-        <LoginForm role="admin" portalOrigin="admin" submitButtonBackground="#1e293b" submitButtonHoverBackground="#334155" submitButtonText="Sign in as Admin &rarr;" />
+        <Suspense fallback={<div style={{ textAlign: "center", padding: "2rem", color: "var(--color-500)" }}>Loading...</div>}>
+          <LoginForm role="admin" portalOrigin="admin" submitButtonBackground="#1e293b" submitButtonHoverBackground="#334155" submitButtonText="Sign in as Admin &rarr;" />
+        </Suspense>
 
         {/* Security Notice */}
         <div

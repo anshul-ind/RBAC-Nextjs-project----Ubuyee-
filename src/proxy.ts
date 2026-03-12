@@ -2,20 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "./lib/jwt";
 
 /**
- * Global middleware for basic RBAC on portal routes.
- *
- * It enforces that:
- * - `/user/**`   can only be accessed by role `"user"`.
- * - `/vendor/**` can only be accessed by role `"vendor"`.
- * - `/admin/**`  can only be accessed by role `"admin"`.
- *
- * If there is no valid token:
- * - Requests to `/user/**`   are redirected to `/user/login`.
- * - Requests to `/vendor/**` are redirected to `/vendor/login`.
- * - Requests to `/admin/**`  are redirected to `/admin/login`.
- *
- * If the user has a different role than required for the route, they are
- * redirected to their own portal dashboard (e.g. vendor → `/vendor/dashboard`).
+ * Global proxy for basic RBAC on portal routes. (Next.js 16 convention)
  */
 const ROUTE_PERMISSIONS: Record<string, string[]> = {
   "/user":   ["user", "vendor", "admin"],
@@ -23,7 +10,7 @@ const ROUTE_PERMISSIONS: Record<string, string[]> = {
   "/admin":  ["admin"],
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
   // Block /admin/signup permanently

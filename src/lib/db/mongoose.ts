@@ -12,12 +12,13 @@ const MONGODB_URI: string | undefined =
   process.env.MONGODB_URI?.trim() ||
   process.env.Mongo_Uri?.trim();
 
-// Fail fast at startup if the URI is missing — better than a cryptic
-// "ECONNREFUSED" error later when the first DB call is made.
-if (!MONGODB_URI) {
-  throw new Error(
-    "Missing MongoDB connection string. Please set MONGODB_URI (preferred) or Mongo_Uri in your environment.",
-  );
+// Fail fast during runtime if the URI is missing.
+const checkUri = () => {
+  if (!MONGODB_URI) {
+    throw new Error(
+      "Missing MongoDB connection string. Please set MONGODB_URI (preferred) or Mongo_Uri in your environment.",
+    );
+  }
 }
 
 // ── Mongoose connection cache ─────────────────────────────────────────────────
@@ -42,6 +43,7 @@ globalForMongoose.mongoose = cache;
  *   // then use mongoose models (e.g. UserModel.findOne(...))
  */
 export async function connectMongo() {
+  checkUri();
   // Return already established connection immediately
   if (cache.conn) return cache.conn;
 

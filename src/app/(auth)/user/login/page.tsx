@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { LoginForm } from "@/components/shared/auth/LoginForm";
@@ -115,7 +116,9 @@ export default function UserLoginPage() {
         </div>
 
         {/* LoginForm wired to User */}
-        <LoginForm role="user" portalOrigin="user" />
+        <Suspense fallback={<div style={{ textAlign: "center", padding: "2rem", color: "var(--color-500)" }}>Loading...</div>}>
+          <LoginForm role="user" portalOrigin="user" />
+        </Suspense>
 
         {/* Footer Links */}
         <div style={{ marginTop: "1rem" }}>
