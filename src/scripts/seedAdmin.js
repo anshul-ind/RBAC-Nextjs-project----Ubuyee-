@@ -3,30 +3,16 @@ const bcrypt = require('bcryptjs');
 const fs = require('fs');
 const path = require('path');
 
-// Try to load MONGODB_URI from .env.local if not in process.env
-let MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  try {
-    const envPath = path.join(__dirname, '../../.env.local');
-    if (fs.existsSync(envPath)) {
-      const envContent = fs.readFileSync(envPath, 'utf8');
-      const match = envContent.match(/^MONGODB_URI=(.+)$/m);
-      if (match) {
-        MONGODB_URI = match[1].trim();
-      }
-    }
-  } catch (err) {
-    console.warn("Could not read .env.local for MONGODB_URI");
-  }
-}
-
-// Final fallback if still not found
-if (!MONGODB_URI) {
-  MONGODB_URI = "mongodb://127.0.0.1:27017/ubuyee";
-}
+const envPath = path.resolve(process.cwd(), '.env.local');
+require('dotenv').config({ path: envPath });
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/ubuyee";
 
 async function seed() {
+  if (!MONGODB_URI) {
+    console.error("❌ MONGODB_URI is not defined and no fallback available.");
+    process.exit(1);
+  }
+
   try {
     console.log(`Connecting to: ${MONGODB_URI.split('@').pop()}`); // Log only domain/db for safety
     await mongoose.connect(MONGODB_URI);

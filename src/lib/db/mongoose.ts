@@ -24,10 +24,10 @@ const checkUri = () => {
 // ── Mongoose connection cache ─────────────────────────────────────────────────
 // Next.js hot-reload creates new module instances, so we store the connection
 // on `globalThis` to avoid opening a new connection on every hot-reload.
-type MongooseCache = {
+interface MongooseCache {
   conn: typeof mongoose | null;
   promise: Promise<typeof mongoose> | null;
-};
+}
 
 const globalForMongoose = globalThis as unknown as { mongoose?: MongooseCache };
 

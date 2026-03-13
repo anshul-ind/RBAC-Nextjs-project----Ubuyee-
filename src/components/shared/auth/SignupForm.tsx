@@ -20,10 +20,10 @@ const ROLE_DASHBOARD: Record<string, string> = {
   admin: "/admin/dashboard",
 };
 
-type SignupFormProps = {
+interface SignupFormProps {
   role: "user" | "vendor" | "admin";
   portalOrigin: "user" | "vendor" | "admin";
-};
+}
 
 export function SignupForm({ role, portalOrigin }: SignupFormProps) {
   const router = useRouter();

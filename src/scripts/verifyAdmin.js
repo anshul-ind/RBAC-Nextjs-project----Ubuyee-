@@ -3,13 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 async function verify() {
-  let MONGODB_URI;
-  try {
-    const envPath = path.join(__dirname, '..', '..', '.env.local');
-    const envContent = fs.readFileSync(envPath, 'utf8');
-    const match = envContent.match(/^MONGODB_URI=(.+)$/m);
-    if (match) MONGODB_URI = match[1].trim();
-  } catch (err) {}
+  require('dotenv').config({ path: path.resolve(process.cwd(), '.env.local') });
+  const MONGODB_URI = process.env.MONGODB_URI;
 
   if (!MONGODB_URI) {
     console.error("No MONGODB_URI found in .env.local");

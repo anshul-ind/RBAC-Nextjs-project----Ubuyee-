@@ -1,24 +1,23 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
-import { RootState } from "..";
 
 export type AuthRole = "user" | "vendor" | "admin";
 
-export type AuthUser = {
+export interface AuthUser {
   id: string;
   email: string;
   role: AuthRole;
   name?: string | null;
-};
+}
 
-export type AuthState = {
+export interface AuthState {
   user: AuthUser | null;
   role: AuthRole | null;
   token: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
-};
+}
 
 const initialState: AuthState = {
   user: null,
@@ -195,5 +194,5 @@ export const logoutThunk = createAsyncThunk("auth/logout", async () => {
 });
 
 export const { setCredentials, clearAuth } = authSlice.actions;
-export const selectAuth = (state: RootState) => state.auth;
+export const selectAuth = (state: { auth: AuthState }) => state.auth;
 export const authReducer = authSlice.reducer;

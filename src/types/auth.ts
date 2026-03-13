@@ -1,10 +1,10 @@
 export type Role = "user" | "vendor" | "admin";
 
-export type AuthUser = {
+export interface AuthUser {
   id: string;
   email: string;
   role: Role;
-};
+}
 
-export type LoginRequest = { email: string; password: string; role: Role };
-export type SignupRequest = { email: string; password: string; role: Role };
+export interface LoginRequest { email: string; password: string; role: Role }
+export interface SignupRequest { email: string; password: string; role: Role }

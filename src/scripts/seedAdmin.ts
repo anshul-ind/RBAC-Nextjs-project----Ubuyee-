@@ -2,6 +2,10 @@ import mongoose from "mongoose"
 import bcrypt from "bcryptjs"
 import { connectMongo as connectDB } from "../lib/db/mongoose"
 import { UserModel as User } from "../lib/db/models/User"
+import path from "path"
+import dotenv from "dotenv"
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env.local") })
 
 async function seedAdmin() {
   await connectDB()

@@ -21,13 +21,13 @@ const ROLE_DASHBOARD: Record<string, string> = {
   admin: "/admin/dashboard",
 };
 
-type LoginFormProps = {
+interface LoginFormProps {
   role: "user" | "vendor" | "admin";
   portalOrigin: "user" | "vendor" | "admin";
   submitButtonBackground?: string;
   submitButtonHoverBackground?: string;
   submitButtonText?: string;
-};
+}
 
 export function LoginForm({
   role,

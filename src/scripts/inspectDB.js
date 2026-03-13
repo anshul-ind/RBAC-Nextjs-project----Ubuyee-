@@ -3,21 +3,17 @@ const fs = require('fs');
 const path = require('path');
 
 async function inspect() {
-  let MONGODB_URI;
-  try {
-    const envPath = path.join(__dirname, '..', '..', '.env.local');
-    const envContent = fs.readFileSync(envPath, 'utf8');
-    const match = envContent.match(/^MONGODB_URI=(.+)$/m);
-    if (match) MONGODB_URI = match[1].trim();
-  } catch (err) {}
-
-  if (!MONGODB_URI) {
-    console.error("No MONGODB_URI found in .env.local");
-    process.exit(1);
-  }
+  require('dotenv').config({ path: path.resolve(process.cwd(), '.env.local') });
+  const MONGODB_URI = process.env.MONGODB_URI;
 
   try {
+    if (!MONGODB_URI) {
+      throw new Error("MONGODB_URI is not defined in environment variables");
+    }
     const conn = await mongoose.createConnection(MONGODB_URI).asPromise();
+    if (!conn.db) {
+      throw new Error("Database not connected correctly: conn.db is undefined");
+    }
     const admin = conn.db.admin();
     const dbs = await admin.listDatabases();
     console.log("Databases:", dbs.databases.map(db => db.name));

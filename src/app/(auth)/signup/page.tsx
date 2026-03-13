@@ -160,13 +160,13 @@ export default function SignupSelectorPage() {
             icon="🏪"
             path="/vendor/signup"
           />
-          <RoleCard
+          {/* <RoleCard
             index={2}
             title="Administrator"
             description="Internal portal for system management and operational oversight."
             icon="🛡️"
             path="/admin/signup"
-          />
+          /> */}
         </div>
 
         <motion.div

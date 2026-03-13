@@ -2,11 +2,11 @@
 
 import React from "react";
 
-type StatsCardProps = {
+interface StatsCardProps {
   title: string;
   value: string | number;
   subtitle?: string;
-};
+}
 
 /**
  * Task 3: Ubuyee StatsCard

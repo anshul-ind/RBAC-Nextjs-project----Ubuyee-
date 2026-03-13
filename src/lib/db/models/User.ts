@@ -9,14 +9,14 @@ export type UserRole = "user" | "vendor" | "admin";
  * - `passwordHash` stores the hashed password (never store plain text).
  * - `name` is optional for flexibility in auth flows.
  */
-export type UserDocument = mongoose.Document & {
+export interface UserDocument extends mongoose.Document {
   name?: string;
   email: string;
   passwordHash: string;
   role: UserRole;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 const UserSchema = new Schema<UserDocument>(
   {

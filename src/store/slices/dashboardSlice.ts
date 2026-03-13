@@ -4,28 +4,28 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 // These types mirror the `data` field returned by each /api/dashboard/* route.
 
 /** Stats returned by GET /api/dashboard/user */
-export type UserDashboardData = {
+export interface UserDashboardData {
   stats: {
     totalOrders: number;
     activeSubscriptions: number;
   };
-};
+}
 
 /** Stats returned by GET /api/dashboard/vendor */
-export type VendorDashboardData = {
+export interface VendorDashboardData {
   stats: {
     totalSales: number;
     activeProducts: number;
   };
-};
+}
 
 /** Stats returned by GET /api/dashboard/admin */
-export type AdminDashboardData = {
+export interface AdminDashboardData {
   stats: {
     totalUsers: number;
     totalVendors: number;
   };
-};
+}
 
 /** Union of all possible dashboard payloads (null = not yet loaded) */
 export type DashboardData =
@@ -34,11 +34,11 @@ export type DashboardData =
   | AdminDashboardData
   | null;
 
-export type DashboardState = {
+export interface DashboardState {
   data: DashboardData;
   isLoading: boolean;
   error: string | null;
-};
+}
 
 const initialState: DashboardState = {
   data: null,

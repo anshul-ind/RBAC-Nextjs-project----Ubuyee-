@@ -10,10 +10,10 @@ import * as jose from "jose";
 
 export type JwtRole = "user" | "vendor" | "admin";
 
-export type JwtPayload = {
+export interface JwtPayload extends jose.JWTPayload {
   sub: string;
   role: JwtRole;
-};
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret_keep_it_safe";
 const secretKey = new TextEncoder().encode(JWT_SECRET);
