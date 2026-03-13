@@ -71,14 +71,18 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
   if (!isAuthenticated) return null
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#fafafa" }}>
+    <div
+      style={{
+        minHeight: "100vh",
+        backgroundColor: "var(--color-50)",
+      }}
+    >
       <TopNav />
       <main
         style={{
-          maxWidth: "1400px",
-          margin: "0 auto",
-          padding: "0.75rem clamp(1rem, 4vw, 2rem) 2.5rem",
-          boxSizing: "border-box",
+          paddingTop: "var(--nav-height)",
+          width: "100%",
+          overflowX: "hidden",
         }}
       >
         {children}

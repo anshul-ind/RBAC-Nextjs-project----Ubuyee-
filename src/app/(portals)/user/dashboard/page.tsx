@@ -12,6 +12,9 @@ export default function UserDashboardPage() {
     <div
       style={{
         width: "100%",
+        maxWidth: "var(--page-max-width)",
+        margin: "0 auto",
+        padding: "clamp(1rem, 3vw, 2rem)",
         fontFamily: "'DM Sans', sans-serif",
       }}
     >
@@ -34,7 +37,13 @@ export default function UserDashboardPage() {
       </div>
 
       {/* Carousel Section */}
-      <div style={{ marginBottom: "clamp(1.5rem, 5vw, 2.5rem)" }}>
+      <div 
+        style={{ 
+          width: "100%",
+          maxWidth: "100%",
+          marginBottom: "clamp(1.5rem, 4vw, 2.5rem)" 
+        }}
+      >
         <DealCarousel />
       </div>
 

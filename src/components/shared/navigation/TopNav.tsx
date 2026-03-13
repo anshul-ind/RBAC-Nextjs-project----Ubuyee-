@@ -47,10 +47,10 @@ export default function TopNav() {
   // Navigation Links
   const navLinks = [
     { label: "Home", icon: FiHome, path: "/user/dashboard" },
-    { label: "Shop", icon: FiGrid, path: "/user/shop" },
-    { label: "Orders", icon: FiShoppingCart, path: "/user/orders" },
-    { label: "Contact", icon: FiPhone, path: "/user/contact" },
-    { label: "Services", icon: FiInfo, path: "/user/services" },
+    { label: "Shop", icon: FiGrid, path: "/shop" },
+    { label: "Orders", icon: FiShoppingCart, path: "/orders" },
+    { label: "Contact", icon: FiPhone, path: "/contact" },
+    { label: "Services", icon: FiInfo, path: "/services" },
   ];
 
   const handleLogout = async () => {
@@ -95,53 +95,59 @@ export default function TopNav() {
           />
         </div>
 
-        {/* TASK 3: CENTER SECTION - NAV LINKS (JS Hover) */}
-        <div
-          style={{
-            flex: 1,
-            display: isTablet ? "none" : "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "0.25rem",
-          }}
-        >
-          {navLinks.map((link) => {
-            const isHovered = hoveredLink === link.path;
+        {/* TASK 4: RIGHT SECTION - NAV LINKS + USER ACTIONS */}
+        <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          {/* Nav links — desktop only, first in right */}
+          <div
+            style={{
+              display: isTablet ? "none" : "flex",
+              alignItems: "center",
+              gap: "0.125rem",
+            }}
+          >
+            {navLinks.map((link) => {
+              const isHovered = hoveredLink === link.path;
+              return (
+                <Link
+                  key={link.path}
+                  href={link.path}
+                  onMouseEnter={() => setHoveredLink(link.path)}
+                  onMouseLeave={() => setHoveredLink(null)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.4rem",
+                    padding: "0.5rem clamp(0.6rem, 1.5vw, 1rem)",
+                    borderRadius: radius.lg,
+                    fontSize: "0.875rem",
+                    fontWeight: isHovered ? 600 : 500,
+                    color: isHovered ? primary.DEFAULT : neutral[500],
+                    textDecoration: "none",
+                    backgroundColor: isHovered ? primary.light : "transparent",
+                    transition: "all 0.15s ease",
+                    whiteSpace: "nowrap",
+                    transform: isHovered ? "translateY(-1px)" : "translateY(0)",
+                  }}
+                >
+                  <link.icon size={15} />
+                  <span>{link.label}</span>
+                </Link>
+              );
+            })}
+          </div>
 
-            return (
-              <Link
-                key={link.path}
-                href={link.path}
-                onMouseEnter={() => setHoveredLink(link.path)}
-                onMouseLeave={() => setHoveredLink(null)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.4rem",
-                  padding: "0.5rem clamp(0.6rem, 1.5vw, 1rem)",
-                  borderRadius: radius.lg,
-                  fontSize: "0.875rem",
-                  fontWeight: isHovered ? 600 : 500,
-                  color: isHovered ? primary.DEFAULT : neutral[500],
-                  textDecoration: "none",
-                  backgroundColor: isHovered ? primary.light : "transparent",
-                  transition: "all 0.15s ease",
-                  whiteSpace: "nowrap",
-                  transform: isHovered ? "translateY(-1px)" : "translateY(0)",
-                }}
-              >
-                <link.icon
-                  size={16}
-                  style={{ transition: "color 0.15s ease" }}
-                />
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
-        </div>
+          {/* Thin divider after nav links — desktop only */}
+          <div
+            style={{
+              display: isTablet ? "none" : "block",
+              width: "1px",
+              height: "1.25rem",
+              backgroundColor: "var(--color-200)",
+              margin: "0 0.25rem",
+              flexShrink: 0,
+            }}
+          />
 
-        {/* TASK 4: RIGHT SECTION - USER ACTIONS */}
-        <div style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: "1rem" }}>
           {/* Cart Icon */}
           <div
             style={{

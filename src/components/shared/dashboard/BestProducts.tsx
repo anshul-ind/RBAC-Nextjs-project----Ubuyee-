@@ -1,37 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiStar, FiPlus } from "react-icons/fi";
-
-/**
- * Task 1 & 3: Best Products Grid (Fixed)
- * Stabilized featured card and reliable image fallbacks.
- */
 
 interface ProductItem {
   id: number;
   name: string;
+  category: string;
   price: string;
   rating: number;
   reviews: number;
   imageUrl: string;
-  featured?: boolean;
 }
 
-const products: ProductItem[] = [
+const PRODUCTS: ProductItem[] = [
   {
     id: 1,
     name: "Beefy Bliss Burger",
+    category: "Burgers",
     price: "₹2,015",
     rating: 4.8,
     reviews: 128,
     imageUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80",
-  
   },
   {
     id: 2,
     name: "Miss Burger",
-    price: "₹2,015",
+    category: "Burgers",
+    price: "₹1,850",
     rating: 4.5,
     reviews: 85,
     imageUrl: "https://images.unsplash.com/photo-1550317138-10000687a72b?w=400&q=80",
@@ -39,6 +35,7 @@ const products: ProductItem[] = [
   {
     id: 3,
     name: "Full Basket",
+    category: "Platters",
     price: "₹3,200",
     rating: 4.9,
     reviews: 210,
@@ -47,6 +44,7 @@ const products: ProductItem[] = [
   {
     id: 4,
     name: "Golden Fries",
+    category: "Sides",
     price: "₹450",
     rating: 4.4,
     reviews: 320,
@@ -55,6 +53,7 @@ const products: ProductItem[] = [
   {
     id: 5,
     name: "Creamy Pasta",
+    category: "Pasta",
     price: "₹1,850",
     rating: 4.7,
     reviews: 94,
@@ -63,6 +62,7 @@ const products: ProductItem[] = [
   {
     id: 6,
     name: "Fruit Platter",
+    category: "Healthy",
     price: "₹1,200",
     rating: 4.5,
     reviews: 56,
@@ -71,6 +71,7 @@ const products: ProductItem[] = [
   {
     id: 7,
     name: "Iced Latte",
+    category: "Drinks",
     price: "₹380",
     rating: 4.8,
     reviews: 145,
@@ -79,6 +80,7 @@ const products: ProductItem[] = [
   {
     id: 8,
     name: "Supreme Chicken",
+    category: "Mains",
     price: "₹2,400",
     rating: 4.9,
     reviews: 178,
@@ -86,161 +88,101 @@ const products: ProductItem[] = [
   },
 ];
 
-const ProductCard = ({ 
-  item, 
-  hoveredId, 
-  onHover 
-}: { 
-  item: ProductItem, 
-  hoveredId: number | null,
-  onHover: (id: number | null) => void
-}) => {
-  const isOrange = item.featured || hoveredId === item.id;
-
-  const wrapperStyle: React.CSSProperties = {
-    backgroundColor: isOrange ? "var(--color-primary)" : "var(--color-0)",
-    border: `1px solid ${isOrange ? "var(--color-primary)" : "var(--color-100)"}`,
-    borderRadius: "var(--radius-2xl)",
-    padding: "0.875rem",
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.625rem",
-    transition: "all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)",
-    cursor: "pointer",
-    boxShadow: isOrange ? "var(--shadow-orange)" : "none",
-    transform: isOrange ? "translateY(-6px) scale(1.02)" : "translateY(0) scale(1)",
-    position: "relative",
-    overflow: "hidden",
-  };
-
-  const imageContainerStyle: React.CSSProperties = {
-    width: "100%",
-    aspectRatio: "1 / 1",
-    borderRadius: "var(--radius-xl)",
-    overflow: "hidden",
-    backgroundColor: "var(--color-50)",
-    border: isOrange ? "2px solid rgba(255,255,255,0.3)" : "none",
-    transition: "all 0.25s ease",
-  };
-
-  const nameStyle: React.CSSProperties = {
-    fontSize: "clamp(0.7rem, 2.5vw, 0.825rem)",
-    fontWeight: 500,
-    color: isOrange ? "#ffffff" : "#111827",
-    margin: 0,
-    transition: "all 0.25s ease",
-    whiteSpace: "nowrap",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-  };
-
-  const ratingStyle: React.CSSProperties = {
-    display: "flex",
-    alignItems: "center",
-    gap: "4px",
-    fontSize: "0.7rem",
-    color: isOrange ? "rgba(255,255,255,0.8)" : "var(--color-500)",
-    transition: "all 0.25s ease",
-  };
-
-  const starsStyle: React.CSSProperties = {
-    display: "flex",
-    color: isOrange ? "var(--color-warning-border)" : "var(--color-warning)",
-    transition: "all 0.25s ease",
-  };
-
-  const priceRowStyle: React.CSSProperties = {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: "0.375rem",
-  };
-
-  const priceStyle: React.CSSProperties = {
-    fontSize: "clamp(0.85rem, 3vw, 1.1rem)",
-    fontWeight: 600,
-    color: isOrange ? "#ffffff" : "#111827",
-    transition: "all 0.25s ease",
-  };
-
-  const addButtonStyle: React.CSSProperties = {
-    width: "clamp(1.5rem, 6vw, 2rem)",
-    height: "clamp(1.5rem, 6vw, 2rem)",
-    borderRadius: "8px",
-    backgroundColor: isOrange ? "var(--color-0)" : "var(--color-primary)",
-    color: isOrange ? "var(--color-primary)" : "var(--color-0)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    border: "none",
-    cursor: "pointer",
-    transition: "all 0.15s ease",
-    fontSize: "1rem",
-    fontWeight: 500,
-  };
-
+const ProductCard = ({ item }: { item: ProductItem }) => {
   return (
     <div 
-      style={wrapperStyle}
-      onMouseEnter={() => {
-        if (!item.featured) onHover(item.id);
+      style={{
+        width: "100%",
+        borderRadius: "var(--radius-xl)",
+        overflow: "hidden",
+        cursor: "pointer",
+        background: "var(--color-0)",
+        border: "1px solid var(--color-100)",
+        transition: "all 0.25s ease",
       }}
-      onMouseLeave={() => {
-        if (!item.featured) onHover(null);
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = "translateY(-4px)";
+        e.currentTarget.style.boxShadow = "0 10px 15px -3px rgba(0,0,0,0.1)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = "translateY(0)";
+        e.currentTarget.style.boxShadow = "none";
       }}
     >
-      <div style={imageContainerStyle}>
+      {/* Image Wrapper */}
+      <div 
+        style={{
+          width: "100%",
+          aspectRatio: "1 / 1",
+          overflow: "hidden",
+          position: "relative",
+        }}
+      >
         <img
           src={item.imageUrl}
           alt={item.name}
+          style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           onError={(e) => {
             e.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=400&q=80";
           }}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
-        <h3 style={nameStyle}>{item.name}</h3>
-        <div style={ratingStyle}>
-          <div style={starsStyle}>
-            <FiStar size={12} fill="currentColor" />
-            <FiStar size={12} fill="currentColor" />
-            <FiStar size={12} fill="currentColor" />
-            <FiStar size={12} fill="currentColor" />
-            <FiStar size={12} fill="currentColor" />
-          </div>
-          <span>{item.rating}</span>
-          <span style={{ opacity: 0.6 }}>({item.reviews || 0})</span>
-        </div>
-      </div>
-
-      <div style={priceRowStyle}>
-        <span style={priceStyle}>{item.price}</span>
-        <button 
-          style={addButtonStyle}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = isOrange ? "var(--color-primary-light)" : "var(--color-primary-hover)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = isOrange ? "var(--color-0)" : "var(--color-primary)";
+      {/* Info Section */}
+      <div style={{ padding: "clamp(0.5rem, 2vw, 0.875rem)" }}>
+        <h3 
+          style={{
+            fontSize: "clamp(0.72rem, 1.8vw, 0.875rem)",
+            fontWeight: 600,
+            color: "var(--color-900)",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            marginBottom: "0.25rem",
           }}
         >
-          <FiPlus size={20} strokeWidth={3} />
-        </button>
+          {item.name}
+        </h3>
+        
+        <p 
+          style={{
+            fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)",
+            color: "var(--color-500)",
+            marginBottom: "0.375rem",
+          }}
+        >
+          {item.category}
+        </p>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span 
+            style={{
+              fontSize: "clamp(0.8rem, 2vw, 1rem)",
+              fontWeight: 700,
+              color: "var(--color-primary)",
+            }}
+          >
+            {item.price}
+          </span>
+          <div style={{ display: "flex", alignItems: "center", gap: "2px", color: "#f59e0b" }}>
+            <FiStar size={12} fill="currentColor" />
+            <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#4b5563" }}>{item.rating}</span>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
 export default function BestProducts() {
-  const [hoveredId, setHoveredId] = useState<number | null>(null);
-  const [cols, setCols] = useState(4);
+  const [cols, setCols] = useState(2);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const check = () => {
-      if (window.innerWidth >= 1024) setCols(4);
-      else if (window.innerWidth >= 640) setCols(3);
+      const w = window.innerWidth;
+      if (w >= 1280) setCols(4);
+      else if (w >= 900) setCols(3);
+      else if (w >= 560) setCols(2);
       else setCols(2);
     };
     check();
@@ -259,19 +201,17 @@ export default function BestProducts() {
         }}
       >
         <div style={{ display: "flex", alignItems: "baseline", gap: "0.5rem" }}>
-          <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--color-primary)" }}>Best</span>
-          <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "var(--color-900)" }}>Products</span>
+          <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "#f97316" }}>Best</span>
+          <span style={{ fontSize: "1.25rem", fontWeight: 600, color: "#111827" }}>Products</span>
         </div>
 
         <span
           style={{
             fontSize: "0.8rem",
-            color: "var(--color-primary)",
+            color: "#f97316",
             cursor: "pointer",
             fontWeight: 500,
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-          onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
         >
           See All →
         </span>
@@ -281,16 +221,12 @@ export default function BestProducts() {
         style={{
           display: "grid",
           gridTemplateColumns: `repeat(${cols}, 1fr)`,
-          gap: "clamp(0.75rem, 2vw, 1.25rem)",
+          gap: "clamp(0.75rem, 2vw, 1rem)",
+          width: "100%",
         }}
       >
-        {products.map((product) => (
-          <ProductCard 
-            key={product.id} 
-            item={product} 
-            hoveredId={hoveredId}
-            onHover={setHoveredId}
-          />
+        {PRODUCTS.map((product) => (
+          <ProductCard key={product.id} item={product} />
         ))}
       </div>
     </section>

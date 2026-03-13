@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 interface Slide {
@@ -55,64 +55,40 @@ const SLIDES: Slide[] = [
   },
 ];
 
-// Cloned slides for infinite loop: [Last, Slide1, Slide2, Slide3, Slide4, Slide5, First]
-const TECHNICAL_SLIDES = [SLIDES[SLIDES.length - 1], ...SLIDES, SLIDES[0]];
-
 export default function DealCarousel() {
-  // Start at index 1 (the first original slide)
-  const [technicalIndex, setTechnicalIndex] = useState(1);
-  const [isTransitioning, setIsTransitioning] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const SLIDES_COUNT = SLIDES.length;
 
-  // Logical index for dots/counter (0-indexed based on original SLIDES)
-  // We map technicalIndex 1->0, 2->1 ... N->N-1
-  // For technicalIndex 0 (Last clone) -> N-1
-  // For technicalIndex N+1 (First clone) -> 0
-  let logicalIndex = technicalIndex - 1;
-  if (technicalIndex === 0) logicalIndex = SLIDES.length - 1;
-  if (technicalIndex === SLIDES.length + 1) logicalIndex = 0;
+  const safeIndex = Math.min(currentIndex, SLIDES_COUNT - 1);
 
-  const goTo = (index: number) => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    setIsTransitioning(true);
-    setTechnicalIndex(index);
-  };
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) =>
+        prev >= SLIDES_COUNT - 1 ? 0 : prev + 1
+      );
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [SLIDES_COUNT]);
 
   const goNext = () => {
-    if (!isTransitioning) return; // wait for jumps to finish
-    goTo(technicalIndex + 1);
+    setCurrentIndex((prev) =>
+      prev >= SLIDES_COUNT - 1 ? 0 : prev + 1
+    );
   };
 
   const goPrev = () => {
-    if (!isTransitioning) return;
-    goTo(technicalIndex - 1);
+    setCurrentIndex((prev) =>
+      prev <= 0 ? SLIDES_COUNT - 1 : prev - 1
+    );
   };
 
-  const handleTransitionEnd = () => {
-    // If we land on a clone, jump back to the original instantly without animation
-    if (technicalIndex === 0) {
-      setIsTransitioning(false);
-      setTechnicalIndex(SLIDES.length);
-    } else if (technicalIndex === SLIDES.length + 1) {
-      setIsTransitioning(false);
-      setTechnicalIndex(1);
-    }
+  const goTo = (index: number) => {
+    setCurrentIndex(Math.min(Math.max(0, index), SLIDES_COUNT - 1));
   };
-
-  useEffect(() => {
-    if (isHovered) return;
-    intervalRef.current = setInterval(() => {
-      setTechnicalIndex((prev) => prev + 1);
-      setIsTransitioning(true);
-    }, 3000);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [isHovered]);
 
   return (
-    <div style={{ width: "100%", marginBottom: "40px", position: "relative" }}>
+    <div style={{ width: "100%", maxWidth: "100%", position: "relative" }}>
       {/* Section Header */}
       <div
         style={{
@@ -122,7 +98,7 @@ export default function DealCarousel() {
           marginBottom: "16px",
         }}
       >
-        <h2 style={{ fontSize: "18px", fontWeight: 600, color: "var(--color-900)", margin: 0 }}>
+        <h2 style={{ fontSize: "18px", fontWeight: 600, color: "#111827", margin: 0 }}>
           Today's Deals
         </h2>
         <span
@@ -132,69 +108,68 @@ export default function DealCarousel() {
             cursor: "pointer",
             fontWeight: 500,
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.textDecoration = "underline")}
-          onMouseLeave={(e) => (e.currentTarget.style.textDecoration = "none")}
         >
           See All →
         </span>
       </div>
 
-      {/* Carousel Container */}
+      {/* Carousel Container — full width, no maxWidth cap */}
       <div
         style={{
           width: "100%",
-          position: "relative",
-          overflow: "hidden",
+          maxWidth: "100%",
+          height: "clamp(200px, 45vw, 420px)",
           borderRadius: "var(--radius-2xl)",
-          background: "var(--color-0)",
-          border: "1px solid var(--color-100)",
+          overflow: "hidden",
+          position: "relative",
+          display: "block",
+          background: "white",
+          border: "1px solid #e5e7eb",
           boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-          height: "clamp(220px, 50vw, 420px)",
         }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         {/* Slide Counter */}
         <div
           style={{
             position: "absolute",
-            top: "clamp(0.75rem, 2vw, 1rem)",
-            right: "clamp(0.75rem, 2vw, 1.25rem)",
-            fontSize: "10px",
-            fontFamily: "monospace",
-            color: "var(--color-500)",
-            background: "rgba(255,255,255,0.9)",
-            padding: "2px 10px",
+            top: "clamp(0.5rem, 2vw, 1rem)",
+            right: "clamp(0.5rem, 2vw, 1rem)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(4px)",
+            padding: "0.25rem 0.625rem",
             borderRadius: "var(--radius-full)",
-            border: "1px solid var(--color-100)",
-            zIndex: 20,
+            fontSize: "clamp(0.65rem, 1.5vw, 0.75rem)",
+            fontWeight: 600,
+            color: "#111827",
+            zIndex: 2,
           }}
         >
-          {logicalIndex + 1} / {SLIDES.length}
+          {safeIndex + 1} / {SLIDES_COUNT}
         </div>
 
         {/* Navigation Arrows */}
         <button
           onClick={goPrev}
+          type="button"
           style={{
             position: "absolute",
             left: "clamp(0.5rem, 2vw, 1rem)",
             top: "50%",
             transform: "translateY(-50%)",
-            zIndex: 25,
-            width: "clamp(2rem, 8vw, 2.75rem)",
-            height: "clamp(2rem, 8vw, 2.75rem)",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.95)",
-            border: "1px solid #e5e7eb",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-            fontSize: "clamp(0.7rem, 2vw, 1rem)",
+            width: "clamp(1.75rem, 6vw, 2.5rem)",
+            height: "clamp(1.75rem, 6vw, 2.5rem)",
+            borderRadius: "var(--radius-full)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(4px)",
+            border: "none",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            fontSize: "clamp(0.7rem, 2vw, 1rem)",
+            zIndex: 2,
             color: "#111827",
-            transition: "all 0.2s ease",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
           }}
         >
           ←
@@ -202,25 +177,26 @@ export default function DealCarousel() {
 
         <button
           onClick={goNext}
+          type="button"
           style={{
             position: "absolute",
             right: "clamp(0.5rem, 2vw, 1rem)",
             top: "50%",
             transform: "translateY(-50%)",
-            zIndex: 25,
-            width: "clamp(2rem, 8vw, 2.75rem)",
-            height: "clamp(2rem, 8vw, 2.75rem)",
-            borderRadius: "50%",
-            background: "rgba(255,255,255,0.95)",
-            border: "1px solid #e5e7eb",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
-            fontSize: "clamp(0.7rem, 2vw, 1rem)",
+            width: "clamp(1.75rem, 6vw, 2.5rem)",
+            height: "clamp(1.75rem, 6vw, 2.5rem)",
+            borderRadius: "var(--radius-full)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(4px)",
+            border: "none",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            fontSize: "clamp(0.7rem, 2vw, 1rem)",
+            zIndex: 2,
             color: "#111827",
-            transition: "all 0.2s ease",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
           }}
         >
           →
@@ -228,18 +204,15 @@ export default function DealCarousel() {
 
         {/* Slide Track */}
         <div
-          onTransitionEnd={handleTransitionEnd}
           style={{
             display: "flex",
-            flexDirection: "row",
             width: "100%",
             height: "100%",
-            transition: isTransitioning ? "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)" : "none",
-            transform: `translateX(-${technicalIndex * 100}%)`,
-            willChange: "transform",
+            transition: "transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            transform: `translateX(-${safeIndex * 100}%)`,
           }}
         >
-          {TECHNICAL_SLIDES.map((slide, index) => (
+          {SLIDES.map((slide, index) => (
             <div
               key={index}
               style={{
@@ -247,9 +220,7 @@ export default function DealCarousel() {
                 width: "100%",
                 flexShrink: 0,
                 height: "100%",
-                background: "#ffffff",
                 position: "relative",
-                boxSizing: "border-box",
                 overflow: "hidden",
               }}
             >
@@ -257,8 +228,12 @@ export default function DealCarousel() {
                 src={slide.image}
                 alt={slide.tag}
                 fill
-                priority={index === 1}
-                style={{ objectFit: "cover", objectPosition: "center", display: "block" }}
+                priority={index === 0}
+                style={{ 
+                  objectFit: "cover", 
+                  objectPosition: "center", 
+                  display: "block" 
+                }}
               />
               
               {/* Text Overlay */}
@@ -268,9 +243,8 @@ export default function DealCarousel() {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  padding: "clamp(0.75rem, 3vw, 1.5rem)",
-                  paddingBottom: "clamp(1.5rem, 5vw, 2.5rem)",
-                  background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%)",
+                  padding: "clamp(1rem, 3vw, 2rem)",
+                  background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0) 100%)",
                   zIndex: 10,
                   color: "white",
                 }}
@@ -281,7 +255,7 @@ export default function DealCarousel() {
                     fontWeight: 600,
                     letterSpacing: "0.1em",
                     textTransform: "uppercase",
-                    color: "var(--color-primary)",
+                    color: "#f97316",
                     background: "rgba(255,255,255,0.9)",
                     padding: "2px 8px",
                     borderRadius: "4px",
@@ -294,27 +268,27 @@ export default function DealCarousel() {
 
                 <h3
                   style={{
-                    fontSize: "clamp(1rem, 4vw, 1.75rem)",
-                    fontWeight: 600,
+                    fontSize: "clamp(1rem, 3.5vw, 1.75rem)",
+                    fontWeight: 800,
                     color: "white",
                     margin: "0 0 0.25rem 0",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
                     textOverflow: "ellipsis",
-                    maxWidth: "80%",
+                    maxWidth: "70%",
                   }}
                 >
                   {slide.headline}{" "}
-                  <span style={{ color: "var(--color-primary)" }}>{slide.headlineOrange}</span>
+                  <span style={{ color: "#f97316" }}>{slide.headlineOrange}</span>
                 </h3>
 
                 <p
                   style={{
-                    fontSize: "clamp(0.7rem, 2.5vw, 0.875rem)",
+                    fontSize: "clamp(0.7rem, 2vw, 0.9rem)",
                     color: "rgba(255,255,255,0.85)",
                     lineHeight: 1.4,
-                    margin: "0",
-                    maxWidth: "75%",
+                    margin: "0.25rem 0 0 0",
+                    maxWidth: "65%",
                     display: "-webkit-box",
                     WebkitLineClamp: 2,
                     WebkitBoxOrient: "vertical",
@@ -328,36 +302,29 @@ export default function DealCarousel() {
           ))}
         </div>
 
-        {/* Dot Indicators INSIDE Carousel */}
+        {/* Dot Indicators */}
         <div
           style={{
             position: "absolute",
-            bottom: "20px",
+            bottom: "clamp(0.5rem, 2vw, 1rem)",
             left: "50%",
             transform: "translateX(-50%)",
             display: "flex",
-            gap: "8px",
-            zIndex: 20,
+            gap: "0.375rem",
+            zIndex: 2,
           }}
         >
           {SLIDES.map((_, index) => (
             <div
               key={index}
-              onClick={() => goTo(index + 1)}
+              onClick={() => goTo(index)}
               style={{
-                width: logicalIndex === index ? "32px" : "8px",
-                height: "8px",
-                background: logicalIndex === index ? "var(--color-primary)" : "rgba(255,255,255,0.6)",
-                border: logicalIndex === index ? "none" : "1px solid rgba(0,0,0,0.15)",
+                width: index === safeIndex ? "1.5rem" : "0.375rem",
+                height: "0.375rem",
                 borderRadius: "var(--radius-full)",
+                background: index === safeIndex ? "#f97316" : "rgba(255,255,255,0.5)",
                 transition: "all 0.3s ease",
                 cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                if (logicalIndex !== index) e.currentTarget.style.backgroundColor = "var(--color-primary-border)";
-              }}
-              onMouseLeave={(e) => {
-                if (logicalIndex !== index) e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.6)";
               }}
             />
           ))}
