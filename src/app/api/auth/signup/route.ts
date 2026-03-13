@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json(
       {
         message: "User signed up successfully.",
-        user: { id: newUser._id, email: newUser.email, role: newUser.role },
+        user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role },
       },
       { status: 201 },
     );
